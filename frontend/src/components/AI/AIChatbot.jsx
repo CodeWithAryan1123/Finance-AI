@@ -335,15 +335,15 @@ What would you like to explore first?`;
       <style jsx>{`
         .ai-chatbot-container {
           position: fixed;
-          bottom: 2rem;
-          right: 2rem;
+          bottom: 1.5rem;
+          right: 1.5rem;
           z-index: 1000;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         .chat-toggle-btn {
-          width: 60px;
-          height: 60px;
+          width: 50px;
+          height: 50px;
           border-radius: 50%;
           background: linear-gradient(135deg, #3b82f6, #8b5cf6);
           border: none;
@@ -392,8 +392,8 @@ What would you like to explore first?`;
           position: absolute;
           bottom: 80px;
           right: 0;
-          width: 350px;
-          height: 500px;
+          width: 320px;
+          height: 450px;
           background: rgba(255, 255, 255, 0.95);
           border-radius: 16px;
           box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
@@ -567,11 +567,11 @@ What would you like to explore first?`;
         }
 
         .message-content {
-          max-width: 70%;
-          padding: 0.75rem 1rem;
-          border-radius: 16px;
-          line-height: 1.5;
-          font-size: 0.9rem;
+          max-width: 75%;
+          padding: 0.6rem 0.8rem;
+          border-radius: 12px;
+          line-height: 1.4;
+          font-size: 0.85rem;
           word-wrap: break-word;
           white-space: pre-wrap;
         }
@@ -710,7 +710,6 @@ What would you like to explore first?`;
           .ai-chatbot-container {
             bottom: 1rem;
             right: 1rem;
-            left: 1rem;
           }
 
           .ai-chatbot {
@@ -725,11 +724,11 @@ What would you like to explore first?`;
           }
 
           .ai-chatbot.minimized {
-            height: 60px;
-            width: auto;
+            height: 50px;
+            width: 280px;
             right: 1rem;
             left: auto;
-            bottom: 5rem;
+            bottom: 4rem;
             border-radius: 12px;
             position: absolute;
           }
@@ -739,8 +738,8 @@ What would you like to explore first?`;
           }
 
           .chat-toggle-btn {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
           }
         }
       `}</style>
