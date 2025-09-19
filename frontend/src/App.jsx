@@ -95,6 +95,7 @@ function App() {
 const AuthenticatedApp = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [chatbotOpen, setChatbotOpen] = useState(false);
 
   // Check if mobile on mount and window resize
   useEffect(() => {
@@ -111,6 +112,10 @@ const AuthenticatedApp = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  const handleChatbotToggle = () => {
+    setChatbotOpen(!chatbotOpen);
+  };
+
   return (
     <motion.div 
       className="app-layout"
@@ -122,7 +127,7 @@ const AuthenticatedApp = () => {
       <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
       
       <div className={`main-content ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'} ${isMobile ? 'mobile' : ''}`}>
-        <Header onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
+        <Header onMenuToggle={() => setSidebarOpen(!sidebarOpen)} onChatbotToggle={handleChatbotToggle} />
         
         <motion.main 
           className="page-container"
@@ -141,7 +146,7 @@ const AuthenticatedApp = () => {
         </motion.main>
         
         {/* AI Chatbot */}
-        <AIChatbot />
+        <AIChatbot isOpen={chatbotOpen} onClose={() => setChatbotOpen(false)} />
       </div>
     </motion.div>
   );

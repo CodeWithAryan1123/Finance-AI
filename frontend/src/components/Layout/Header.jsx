@@ -12,13 +12,15 @@ import {
   DollarSign,
   Calendar,
   Tag,
-  Type
+  Type,
+  Bot,
+  MessageCircle
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { useTransactions } from '../../context/TransactionsContext';
 
-const Header = ({ onMenuToggle }) => {
+const Header = ({ onMenuToggle, onChatbotToggle }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -118,6 +120,18 @@ const Header = ({ onMenuToggle }) => {
           >
             <Plus size={18} />
             <span>Add</span>
+          </motion.button>
+
+          {/* AI Chatbot Toggle */}
+          <motion.button
+            className="chatbot-toggle"
+            onClick={onChatbotToggle}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            title="AI Financial Advisor"
+          >
+            <Bot size={18} />
+            <span>AI Assistant</span>
           </motion.button>
 
           {/* Theme Toggle */}
@@ -464,7 +478,26 @@ const Header = ({ onMenuToggle }) => {
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        .chatbot-toggle {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.75rem 1rem;
+          background: linear-gradient(135deg, #8b5cf6, #a855f7);
+          color: white;
+          border: none;
+          border-radius: var(--border-radius-md);
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         .quick-add-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-lg);
+        }
+
+        .chatbot-toggle:hover {
           transform: translateY(-2px);
           box-shadow: var(--shadow-lg);
         }
@@ -807,6 +840,10 @@ const Header = ({ onMenuToggle }) => {
           }
           
           .quick-add-btn span {
+            display: none;
+          }
+
+          .chatbot-toggle span {
             display: none;
           }
           

@@ -17,8 +17,7 @@ import {
 import { useTransactions } from '../../context/TransactionsContext';
 import toast from 'react-hot-toast';
 
-const AIChatbot = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const AIChatbot = ({ isOpen, onClose }) => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState([
     {
@@ -281,14 +280,6 @@ What would you like to explore first?`;
     }
   };
 
-  const toggleChat = () => {
-    setIsOpen(!isOpen);
-    if (!isOpen) {
-      setIsMinimized(false);
-      toast.success('AI Financial Advisor is here to help!');
-    }
-  };
-
   // Animation variants
   const chatVariants = {
     hidden: { 
@@ -390,7 +381,7 @@ What would you like to explore first?`;
 
         .ai-chatbot {
           position: absolute;
-          bottom: 80px;
+          bottom: 0;
           right: 0;
           width: 320px;
           height: 450px;
@@ -710,6 +701,7 @@ What would you like to explore first?`;
           .ai-chatbot-container {
             bottom: 1rem;
             right: 1rem;
+            left: auto;
           }
 
           .ai-chatbot {
@@ -726,8 +718,8 @@ What would you like to explore first?`;
           .ai-chatbot.minimized {
             height: 50px;
             width: 280px;
-            right: 1rem;
-            left: auto;
+            left: 1rem;
+            right: auto;
             bottom: 4rem;
             border-radius: 12px;
             position: absolute;
@@ -742,28 +734,15 @@ What would you like to explore first?`;
             height: 45px;
           }
         }
+
+        @media (max-width: 768px) {
+          .ai-chatbot-container {
+            left: 1rem;
+          }
+        }
       `}</style>
 
       <div className="ai-chatbot-container">
-        {/* Chat Toggle Button */}
-        <AnimatePresence>
-          {!isOpen && (
-            <motion.button
-              className="chat-toggle-btn"
-              variants={buttonVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              onClick={toggleChat}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <div className="pulse-ring" />
-              <MessageCircle size={24} />
-            </motion.button>
-          )}
-        </AnimatePresence>
-
         {/* Chat Window */}
         <AnimatePresence>
           {isOpen && (
@@ -805,7 +784,7 @@ What would you like to explore first?`;
                     className="chat-control-btn close-btn"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setIsOpen(false);
+                      onClose();
                     }}
                     title="Close chat"
                   >
