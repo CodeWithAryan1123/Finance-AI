@@ -51,7 +51,7 @@ const Header = ({ onMenuToggle }) => {
 
           <div className="header-title">
             <h1>Welcome back, {user?.name?.split(' ')[0] || 'Guest'}!</h1>
-            <p>Here's what's happening with your finances today</p>
+            <p className="header-subtitle">Here's what's happening with your finances today</p>
           </div>
         </div>
 
@@ -217,6 +217,8 @@ const Header = ({ onMenuToggle }) => {
           justify-content: space-between;
           padding: 0 2rem;
           gap: 2rem;
+          max-width: 100%;
+          overflow: hidden;
         }
 
         .header-left {
@@ -225,6 +227,7 @@ const Header = ({ onMenuToggle }) => {
           gap: 1rem;
           flex: 1;
           min-width: 0;
+          overflow: hidden;
         }
 
         .menu-toggle {
@@ -239,10 +242,17 @@ const Header = ({ onMenuToggle }) => {
           color: var(--text-primary);
           cursor: pointer;
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          flex-shrink: 0;
         }
 
         .menu-toggle:hover {
           background: var(--bg-tertiary);
+        }
+
+        .header-title {
+          flex: 1;
+          min-width: 0;
+          overflow: hidden;
         }
 
         .header-title h1 {
@@ -253,20 +263,23 @@ const Header = ({ onMenuToggle }) => {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          line-height: 1.2;
         }
 
-        .header-title p {
+        .header-subtitle {
           font-size: 0.9rem;
           color: var(--text-secondary);
           margin: 0;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          line-height: 1.2;
         }
 
         .header-center {
           flex: 2;
           max-width: 600px;
+          min-width: 0;
         }
 
         .search-form {
@@ -282,6 +295,8 @@ const Header = ({ onMenuToggle }) => {
           border-radius: var(--border-radius-lg);
           padding: 0.75rem 1rem;
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          width: 100%;
+          box-sizing: border-box;
         }
 
         .search-container:focus-within {
@@ -507,13 +522,37 @@ const Header = ({ onMenuToggle }) => {
           font-weight: 500;
         }
 
+        @media (max-width: 1200px) {
+          .header-content {
+            padding: 0 1.5rem;
+            gap: 1.5rem;
+          }
+          
+          .header-center {
+            max-width: 400px;
+          }
+        }
+
         @media (max-width: 1024px) {
-          .header-title p {
+          .header-content {
+            padding: 0 1rem;
+            gap: 1rem;
+          }
+          
+          .header-subtitle {
             display: none;
           }
           
           .quick-add-btn span {
             display: none;
+          }
+          
+          .header-center {
+            max-width: 300px;
+          }
+          
+          .header-title h1 {
+            font-size: 1.3rem;
           }
         }
 
@@ -528,6 +567,7 @@ const Header = ({ onMenuToggle }) => {
 
           .header-content {
             padding: 0 1rem;
+            gap: 0.75rem;
           }
 
           .header-center {
@@ -536,6 +576,41 @@ const Header = ({ onMenuToggle }) => {
 
           .header-title h1 {
             font-size: 1.2rem;
+          }
+          
+          .header-left {
+            gap: 0.75rem;
+          }
+          
+          .header-right {
+            gap: 0.5rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .header-content {
+            padding: 0 0.75rem;
+          }
+          
+          .header-title h1 {
+            font-size: 1.1rem;
+          }
+          
+          .quick-add-btn {
+            padding: 0.5rem;
+            min-width: 40px;
+          }
+          
+          .theme-toggle,
+          .settings-btn,
+          .notification-btn {
+            width: 36px;
+            height: 36px;
+          }
+          
+          .notifications-dropdown {
+            width: calc(100vw - 2rem);
+            right: -1rem;
           }
         }
       `}</style>
