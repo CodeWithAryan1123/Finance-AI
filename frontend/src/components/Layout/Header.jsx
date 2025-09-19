@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { 
   Menu, 
@@ -33,6 +34,7 @@ const Header = ({ onMenuToggle, onChatbotToggle }) => {
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
   const { addTransaction } = useTransactions();
+  const navigate = useNavigate();
 
   const notifications = [
     { id: 1, title: 'Budget Alert', message: 'You have exceeded 80% of your food budget', type: 'warning', time: '5m ago' },
@@ -42,6 +44,10 @@ const Header = ({ onMenuToggle, onChatbotToggle }) => {
 
   const handleAddClick = () => {
     setShowAddModal(true);
+  };
+
+  const handleSettingsClick = () => {
+    navigate('/settings');
   };
 
   const handleCloseModal = () => {
@@ -229,6 +235,7 @@ const Header = ({ onMenuToggle, onChatbotToggle }) => {
           {/* Settings */}
           <motion.button
             className="settings-btn"
+            onClick={handleSettingsClick}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             title="Settings"

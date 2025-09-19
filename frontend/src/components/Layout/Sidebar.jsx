@@ -6,7 +6,6 @@ import {
   CreditCard, 
   PieChart, 
   BarChart3, 
-  Settings, 
   LogOut,
   Wallet,
   TrendingUp,
@@ -53,7 +52,6 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { path: '/transactions', icon: CreditCard, label: 'Transactions', color: '#10b981' },
     { path: '/budgets', icon: Target, label: 'Budgets', color: '#f59e0b' },
     { path: '/analytics', icon: BarChart3, label: 'Analytics', color: '#8b5cf6' },
-    { path: '/settings', icon: Settings, label: 'Settings', color: '#6b7280' },
   ];
 
   const handleLogout = () => {
