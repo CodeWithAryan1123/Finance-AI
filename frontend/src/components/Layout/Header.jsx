@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
+import { useTransactions } from '../../context/TransactionsContext';
 
 const Header = ({ onMenuToggle }) => {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -29,6 +30,7 @@ const Header = ({ onMenuToggle }) => {
   });
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
+  const { addTransaction } = useTransactions();
 
   const notifications = [
     { id: 1, title: 'Budget Alert', message: 'You have exceeded 80% of your food budget', type: 'warning', time: '5m ago' },
@@ -67,11 +69,16 @@ const Header = ({ onMenuToggle }) => {
       return;
     }
 
-    // Here you would typically send the data to your backend
-    console.log('Adding transaction:', formData);
-    
-    toast.success(`${formData.type === 'expense' ? 'Expense' : 'Income'} added successfully!`);
-    handleCloseModal();
+    try {
+      // Add transaction using the context
+      const newTransaction = addTransaction(formData);
+      
+      toast.success(`${formData.type === 'expense' ? 'Expense' : 'Income'} added successfully!`);
+      handleCloseModal();
+    } catch (error) {
+      console.error('Error adding transaction:', error);
+      toast.error('Failed to add transaction. Please try again.');
+    }
   };
 
   return (
@@ -306,21 +313,22 @@ const Header = ({ onMenuToggle }) => {
                         <option value="">Select category</option>
                         {formData.type === 'expense' ? (
                           <>
-                            <option value="food">Food & Dining</option>
-                            <option value="transport">Transportation</option>
-                            <option value="shopping">Shopping</option>
-                            <option value="entertainment">Entertainment</option>
-                            <option value="bills">Bills & Utilities</option>
-                            <option value="health">Healthcare</option>
-                            <option value="other">Other</option>
+                            <option value="Food & Dining">Food & Dining</option>
+                            <option value="Transportation">Transportation</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Bills & Utilities">Bills & Utilities</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Education">Education</option>
+                            <option value="Other">Other</option>
                           </>
                         ) : (
                           <>
-                            <option value="salary">Salary</option>
-                            <option value="freelance">Freelance</option>
-                            <option value="investment">Investment</option>
-                            <option value="gift">Gift</option>
-                            <option value="other">Other</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Freelance">Freelance</option>
+                            <option value="Investment">Investment</option>
+                            <option value="Gift">Gift</option>
+                            <option value="Other">Other</option>
                           </>
                         )}
                       </select>

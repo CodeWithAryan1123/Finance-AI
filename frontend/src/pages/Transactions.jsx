@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { useTransactions } from '../context/TransactionsContext';
 import { 
   Plus, 
   Search, 
@@ -21,10 +22,9 @@ import {
 const Transactions = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { transactions, loading, updateTransaction, deleteTransaction } = useTransactions();
   
-  const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedType, setSelectedType] = useState('all');
@@ -32,96 +32,10 @@ const Transactions = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
-  // Mock transaction data - replace with actual API call
-  const mockTransactions = [
-    { 
-      id: 1, 
-      type: 'income', 
-      amount: 85000, 
-      description: 'Salary Credit', 
-      date: '2025-09-16', 
-      category: 'Salary',
-      paymentMethod: 'bank_transfer',
-      status: 'completed'
-    },
-    { 
-      id: 2, 
-      type: 'expense', 
-      amount: 2500, 
-      description: 'Grocery Shopping', 
-      date: '2025-09-15', 
-      category: 'Food & Dining',
-      paymentMethod: 'credit_card',
-      status: 'completed'
-    },
-    { 
-      id: 3, 
-      type: 'expense', 
-      amount: 1200, 
-      description: 'Fuel', 
-      date: '2025-09-14', 
-      category: 'Transportation',
-      paymentMethod: 'debit_card',
-      status: 'completed'
-    },
-    { 
-      id: 4, 
-      type: 'income', 
-      amount: 5000, 
-      description: 'Freelance Project', 
-      date: '2025-09-13', 
-      category: 'Freelance',
-      paymentMethod: 'digital_wallet',
-      status: 'completed'
-    },
-    { 
-      id: 5, 
-      type: 'expense', 
-      amount: 3500, 
-      description: 'Monthly Rent', 
-      date: '2025-09-12', 
-      category: 'Bills & Utilities',
-      paymentMethod: 'bank_transfer',
-      status: 'completed'
-    },
-    { 
-      id: 6, 
-      type: 'expense', 
-      amount: 800, 
-      description: 'Movie & Dinner', 
-      date: '2025-09-11', 
-      category: 'Entertainment',
-      paymentMethod: 'credit_card',
-      status: 'completed'
-    }
-  ];
-
   const categories = [
     'all', 'Food & Dining', 'Transportation', 'Bills & Utilities', 
     'Entertainment', 'Shopping', 'Healthcare', 'Education', 'Salary', 'Freelance'
   ];
-
-  // Fetch transactions (mock for now)
-  const fetchTransactions = async () => {
-    setLoading(true);
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setTransactions(mockTransactions);
-      setFilteredTransactions(mockTransactions);
-      
-      // Check if we need to highlight a specific transaction
-      const highlightId = location.state?.highlightTransaction;
-      if (highlightId) {
-        setSelectedTransaction(highlightId);
-        toast.success(`Highlighting transaction #${highlightId}`);
-      }
-    } catch (error) {
-      toast.error('Failed to fetch transactions');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Filter transactions
   const filterTransactions = () => {
@@ -166,8 +80,13 @@ const Transactions = () => {
   };
 
   useEffect(() => {
-    fetchTransactions();
-  }, []);
+    // Check if we need to highlight a specific transaction
+    const highlightId = location.state?.highlightTransaction;
+    if (highlightId) {
+      setSelectedTransaction(highlightId);
+      toast.success(`Highlighting transaction #${highlightId}`);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     filterTransactions();
@@ -185,7 +104,7 @@ const Transactions = () => {
 
   const handleDeleteTransaction = (transactionId) => {
     if (window.confirm('Are you sure you want to delete this transaction?')) {
-      setTransactions(transactions.filter(t => t.id !== transactionId));
+      deleteTransaction(transactionId);
       toast.success('Transaction deleted successfully');
     }
   };

@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { ApiProvider } from './context/ApiContext';
+import { TransactionsProvider } from './context/TransactionsContext';
 
 // Components
 import Sidebar from './components/Layout/Sidebar';
@@ -57,7 +58,8 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <ApiProvider>
-          <Router>
+          <TransactionsProvider>
+            <Router>
             <div className="app">
               <Toaster 
                 position="top-right"
@@ -82,6 +84,7 @@ function App() {
               </AnimatePresence>
             </div>
           </Router>
+          </TransactionsProvider>
         </ApiProvider>
       </AuthProvider>
     </ThemeProvider>
