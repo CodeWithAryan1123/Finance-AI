@@ -17,7 +17,7 @@ import {
 import { useTransactions } from '../../context/TransactionsContext';
 import toast from 'react-hot-toast';
 
-const AIChatbot = ({ isOpen, onClose }) => {
+const AIChatbot = ({ isOpen, onToggle }) => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState([
     {
@@ -280,6 +280,14 @@ What would you like to explore first?`;
     }
   };
 
+  const toggleChat = () => {
+    onToggle();
+    if (!isOpen) {
+      setIsMinimized(false);
+      toast.success('AI Financial Advisor is here to help!');
+    }
+  };
+
   // Animation variants
   const chatVariants = {
     hidden: { 
@@ -332,56 +340,9 @@ What would you like to explore first?`;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
-        .chat-toggle-btn {
-          width: 50px;
-          height: 50px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-          border: none;
-          color: white;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
-          transition: all 0.3s ease;
-          backdrop-filter: blur(10px);
-          position: relative;
-          overflow: hidden;
-        }
-
-        .chat-toggle-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 12px 40px rgba(59, 130, 246, 0.4);
-        }
-
-        .chat-toggle-btn:active {
-          transform: translateY(0);
-        }
-
-        .pulse-ring {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          border: 2px solid rgba(59, 130, 246, 0.5);
-          border-radius: 50%;
-          animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-          0% {
-            transform: scale(1);
-            opacity: 1;
-          }
-          100% {
-            transform: scale(1.4);
-            opacity: 0;
-          }
-        }
-
         .ai-chatbot {
           position: absolute;
-          bottom: 0;
+          bottom: 80px;
           right: 0;
           width: 320px;
           height: 450px;
@@ -701,7 +662,6 @@ What would you like to explore first?`;
           .ai-chatbot-container {
             bottom: 1rem;
             right: 1rem;
-            left: auto;
           }
 
           .ai-chatbot {
@@ -718,8 +678,8 @@ What would you like to explore first?`;
           .ai-chatbot.minimized {
             height: 50px;
             width: 280px;
-            left: 1rem;
-            right: auto;
+            right: 1rem;
+            left: auto;
             bottom: 4rem;
             border-radius: 12px;
             position: absolute;
@@ -732,12 +692,6 @@ What would you like to explore first?`;
           .chat-toggle-btn {
             width: 45px;
             height: 45px;
-          }
-        }
-
-        @media (max-width: 768px) {
-          .ai-chatbot-container {
-            left: 1rem;
           }
         }
       `}</style>
@@ -784,7 +738,7 @@ What would you like to explore first?`;
                     className="chat-control-btn close-btn"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onClose();
+                      onToggle();
                     }}
                     title="Close chat"
                   >

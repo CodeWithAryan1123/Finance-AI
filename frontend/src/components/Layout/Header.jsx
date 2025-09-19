@@ -14,14 +14,13 @@ import {
   Calendar,
   Tag,
   Type,
-  Bot,
-  MessageCircle
+  Bot
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { useTransactions } from '../../context/TransactionsContext';
 
-const Header = ({ onMenuToggle, onChatbotToggle }) => {
+const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -128,18 +127,6 @@ const Header = ({ onMenuToggle, onChatbotToggle }) => {
             <span>Add</span>
           </motion.button>
 
-          {/* AI Chatbot Toggle */}
-          <motion.button
-            className="chatbot-toggle"
-            onClick={onChatbotToggle}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            title="AI Financial Advisor"
-          >
-            <Bot size={18} />
-            <span>AI Assistant</span>
-          </motion.button>
-
           {/* Theme Toggle */}
           <motion.button
             className="theme-toggle"
@@ -231,6 +218,18 @@ const Header = ({ onMenuToggle, onChatbotToggle }) => {
               )}
             </AnimatePresence>
           </div>
+
+          {/* AI Chatbot */}
+          <motion.button
+            className={`ai-chatbot-btn ${isChatbotOpen ? 'active' : ''}`}
+            onClick={onChatbotToggle}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            title="AI Financial Assistant"
+          >
+            <Bot size={18} />
+            <span>AI Assistant</span>
+          </motion.button>
 
           {/* Settings */}
           <motion.button
@@ -485,7 +484,12 @@ const Header = ({ onMenuToggle, onChatbotToggle }) => {
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .chatbot-toggle {
+        .quick-add-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-lg);
+        }
+
+        .ai-chatbot-btn {
           display: flex;
           align-items: center;
           gap: 0.5rem;
@@ -499,14 +503,14 @@ const Header = ({ onMenuToggle, onChatbotToggle }) => {
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .quick-add-btn:hover {
+        .ai-chatbot-btn:hover {
           transform: translateY(-2px);
           box-shadow: var(--shadow-lg);
         }
 
-        .chatbot-toggle:hover {
-          transform: translateY(-2px);
-          box-shadow: var(--shadow-lg);
+        .ai-chatbot-btn.active {
+          background: linear-gradient(135deg, #a855f7, #c084fc);
+          box-shadow: var(--shadow-md);
         }
 
         .theme-toggle,
@@ -849,10 +853,6 @@ const Header = ({ onMenuToggle, onChatbotToggle }) => {
           .quick-add-btn span {
             display: none;
           }
-
-          .chatbot-toggle span {
-            display: none;
-          }
           
           .header-title h1 {
             font-size: 1.3rem;
@@ -927,9 +927,14 @@ const Header = ({ onMenuToggle, onChatbotToggle }) => {
           
           .theme-toggle,
           .settings-btn,
-          .notification-btn {
+          .notification-btn,
+          .ai-chatbot-btn {
             width: 36px;
             height: 36px;
+          }
+          
+          .ai-chatbot-btn span {
+            display: none;
           }
           
           .notifications-dropdown {
