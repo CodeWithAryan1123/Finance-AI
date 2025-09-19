@@ -30,6 +30,13 @@
   --error: #ef4444;
   --info: #3b82f6;
   
+  /* Primary Colors for Buttons */
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --secondary-bg: #f8fafc;
+  --input-bg: #ffffff;
+  --hover-bg: #f1f5f9;
+  
   --sidebar-width: 280px;
   --header-height: 72px;
   
@@ -59,6 +66,13 @@
   
   --border-color: rgba(148, 163, 184, 0.15);
   --border-hover: rgba(96, 165, 250, 0.3);
+  
+  /* Primary Colors for Buttons - Dark Theme */
+  --primary-color: #60a5fa;
+  --primary-hover: #3b82f6;
+  --secondary-bg: #334155;
+  --input-bg: #1e293b;
+  --hover-bg: #334155;
   
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);

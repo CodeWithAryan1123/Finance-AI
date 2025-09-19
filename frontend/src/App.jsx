@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { ApiProvider } from './context/ApiContext';
 import { TransactionsProvider } from './context/TransactionsContext';
 import { AIProvider } from './context/AIContext';
+import { NotificationProvider } from './context/NotificationContext';
 
 // Components
 import Sidebar from './components/Layout/Sidebar';
@@ -71,12 +72,13 @@ const AppContent = () => {
   return (
     <ApiProvider>
       <TransactionsProvider>
-        <AIProvider>
-          <AnimatePresence mode="wait">
-            {isAuthenticated ? <AuthenticatedApp /> : <UnauthenticatedApp />}
-          </AnimatePresence>
-          
-          {/* Toast Notifications */}
+        <NotificationProvider>
+          <AIProvider>
+            <AnimatePresence mode="wait">
+              {isAuthenticated ? <AuthenticatedApp /> : <UnauthenticatedApp />}
+            </AnimatePresence>
+            
+            {/* Toast Notifications */}
           <Toaster 
             position="top-right"
             toastOptions={{
@@ -102,7 +104,8 @@ const AppContent = () => {
               },
             }}
           />
-        </AIProvider>
+          </AIProvider>
+        </NotificationProvider>
       </TransactionsProvider>
     </ApiProvider>
   );

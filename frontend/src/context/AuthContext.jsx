@@ -25,23 +25,6 @@ export const AuthProvider = ({ children }) => {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
       setIsAuthenticated(true);
-    } else {
-      // Auto-login as guest user for demo purposes
-      const demoUser = {
-        id: 1,
-        name: 'Guest User',
-        email: 'guest@financeai.com',
-        avatar: null
-      };
-      
-      const demoToken = 'demo-token-' + Date.now();
-
-      setUser(demoUser);
-      setToken(demoToken);
-      setIsAuthenticated(true);
-
-      localStorage.setItem('authToken', demoToken);
-      localStorage.setItem('user', JSON.stringify(demoUser));
     }
 
     setLoading(false);
@@ -73,27 +56,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = async () => {
-    try {
-      // Clear user state
-      setUser(null);
-      setToken(null);
-      setIsAuthenticated(false);
+  const logout = () => {
+    setUser(null);
+    setToken(null);
+    setIsAuthenticated(false);
 
-      // Clear localStorage
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('user');
-      
-      // Clear any other user-related data
-      localStorage.removeItem('transactions');
-      localStorage.removeItem('budgets');
-      localStorage.removeItem('userPreferences');
-      
-      return { success: true };
-    } catch (error) {
-      console.error('Logout error:', error);
-      return { success: false, error: error.message };
-    }
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
   };
 
   const updateUser = (updatedUser) => {
