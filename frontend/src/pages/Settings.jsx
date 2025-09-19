@@ -34,6 +34,7 @@ import {
 const Settings = () => {
   const [activeSection, setActiveSection] = useState('profile');
   const [loading, setLoading] = useState({});
+  const [imageUploading, setImageUploading] = useState(false);
   
   // Settings state
   const [settings, setSettings] = useState({
@@ -42,7 +43,7 @@ const Settings = () => {
       lastName: 'User',
       email: 'guest@financeai.com',
       phone: '+91 9876543210',
-      avatar: '/default-avatar.png'
+      avatar: 'https://ui-avatars.com/api/?name=Guest+User&background=3b82f6&color=fff&size=200'
     },
     security: {
       twoFactorEnabled: true,
@@ -92,6 +93,36 @@ const Settings = () => {
     toast.success('Setting updated successfully');
   };
 
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Image size should be less than 5MB');
+        return;
+      }
+
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select a valid image file');
+        return;
+      }
+
+      setImageUploading(true);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setTimeout(() => {
+          updateSetting('profile', 'avatar', e.target.result);
+          setImageUploading(false);
+          toast.success('Profile picture updated successfully');
+        }, 1000); // Simulate upload delay
+      };
+      reader.readAsDataURL(file);
+    }
+    // Reset the input value so the same file can be selected again
+    event.target.value = '';
+  };
+
   const handleExportData = () => {
     setLoading(prev => ({ ...prev, export: true }));
     setTimeout(() => {
@@ -122,9 +153,29 @@ const Settings = () => {
       <div className="profile-section">
         <div className="profile-avatar">
           <img src={settings.profile.avatar} alt="Profile" />
-          <button className="avatar-upload">
-            <Camera size={16} />
-          </button>
+          <label className={`avatar-upload ${imageUploading ? 'uploading' : ''}`} htmlFor="avatar-input">
+            {imageUploading ? (
+              <RefreshCw size={16} className="spinning" />
+            ) : (
+              <Camera size={16} />
+            )}
+            <input
+              id="avatar-input"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              disabled={imageUploading}
+              style={{ display: 'none' }}
+            />
+          </label>
+          {imageUploading && (
+            <div className="upload-overlay">
+              <div className="upload-progress">
+                <RefreshCw size={24} className="spinning" />
+                <span>Uploading...</span>
+              </div>
+            </div>
+          )}
         </div>
         
         <div className="profile-form">
@@ -711,6 +762,7 @@ const Settings = () => {
 
         .profile-avatar {
           position: relative;
+          margin-bottom: 1rem;
         }
 
         .profile-avatar img {
@@ -719,6 +771,33 @@ const Settings = () => {
           border-radius: 50%;
           object-fit: cover;
           border: 3px solid var(--border-color);
+          transition: all 0.2s ease;
+        }
+
+        .upload-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          background: rgba(0, 0, 0, 0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+        }
+
+        .upload-progress {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .upload-progress span {
+          font-size: 0.75rem;
+          font-weight: 500;
         }
 
         .avatar-upload {
@@ -735,6 +814,19 @@ const Settings = () => {
           display: flex;
           align-items: center;
           justify-content: center;
+          transition: all 0.2s ease;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .avatar-upload:hover:not(.uploading) {
+          transform: scale(1.1);
+          background: #2563eb;
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .avatar-upload.uploading {
+          background: #6b7280;
+          cursor: not-allowed;
         }
 
         .profile-form {
