@@ -11,6 +11,7 @@ import { TransactionsProvider } from './context/TransactionsContext';
 import Sidebar from './components/Layout/Sidebar';
 import Header from './components/Layout/Header';
 import LoadingScreen from './components/UI/LoadingScreen';
+import AIChatbot from './components/AI/AIChatbot';
 
 // Pages
 import Dashboard from './pages/Dashboard';
@@ -138,6 +139,9 @@ const AuthenticatedApp = () => {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </motion.main>
+        
+        {/* AI Chatbot */}
+        <AIChatbot />
       </div>
     </motion.div>
   );
