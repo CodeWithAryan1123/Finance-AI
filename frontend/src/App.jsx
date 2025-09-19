@@ -6,12 +6,14 @@ import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { ApiProvider } from './context/ApiContext';
 import { TransactionsProvider } from './context/TransactionsContext';
+import { AIProvider } from './context/AIContext';
 
 // Components
 import Sidebar from './components/Layout/Sidebar';
 import Header from './components/Layout/Header';
 import LoadingScreen from './components/UI/LoadingScreen';
 import AIChatbot from './components/AI/AIChatbot';
+import AINotificationSystem from './components/AI/AINotificationSystem';
 
 // Pages
 import Dashboard from './pages/Dashboard';
@@ -60,21 +62,22 @@ function App() {
       <AuthProvider>
         <ApiProvider>
           <TransactionsProvider>
-            <Router>
-            <div className="app">
-              <Toaster 
-                position="top-right"
-                toastOptions={{
-                  duration: 3000,
-                  style: {
-                    background: 'var(--card-bg)',
-                    color: 'var(--text-primary)',
-                    border: '1px solid var(--border-color)',
-                    borderRadius: '12px',
-                    backdropFilter: 'blur(10px)',
-                  },
-                }}
-              />
+            <AIProvider>
+              <Router>
+              <div className="app">
+                <Toaster 
+                  position="top-right"
+                  toastOptions={{
+                    duration: 3000,
+                    style: {
+                      background: 'var(--card-bg)',
+                      color: 'var(--text-primary)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: '12px',
+                      backdropFilter: 'blur(10px)',
+                    },
+                  }}
+                />
               
               <AnimatePresence mode="wait">
                 {isAuthenticated ? (
@@ -85,6 +88,7 @@ function App() {
               </AnimatePresence>
             </div>
           </Router>
+            </AIProvider>
           </TransactionsProvider>
         </ApiProvider>
       </AuthProvider>
@@ -147,6 +151,9 @@ const AuthenticatedApp = () => {
         
         {/* AI Chatbot */}
         <AIChatbot isOpen={isChatbotOpen} onToggle={() => setIsChatbotOpen(!isChatbotOpen)} />
+        
+        {/* AI Notification System */}
+        <AINotificationSystem />
       </div>
     </motion.div>
   );

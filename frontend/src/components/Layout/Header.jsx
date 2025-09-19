@@ -19,6 +19,7 @@ import {
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { useTransactions } from '../../context/TransactionsContext';
+import { useAI } from '../../context/AIContext';
 
 const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -33,6 +34,7 @@ const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
   const { addTransaction } = useTransactions();
+  const { autoCategorizTransaction } = useAI();
   const navigate = useNavigate();
 
   const notifications = [
@@ -71,14 +73,25 @@ const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    if (!formData.amount || !formData.description || !formData.category) {
-      toast.error('Please fill in all required fields');
+    if (!formData.amount || !formData.description) {
+      toast.error('Please fill in amount and description');
       return;
     }
 
     try {
+      // Auto-categorize if no category is provided
+      let finalCategory = formData.category;
+      if (!finalCategory || finalCategory === '') {
+        finalCategory = autoCategorizTransaction(formData.description, formData.amount);
+        toast.info(`AI categorized as: ${finalCategory}`, { icon: '🤖' });
+      }
+
       // Add transaction using the context
-      const newTransaction = addTransaction(formData);
+      const transactionData = {
+        ...formData,
+        category: finalCategory
+      };
+      const newTransaction = addTransaction(transactionData);
       
       toast.success(`${formData.type === 'expense' ? 'Expense' : 'Income'} added successfully!`);
       handleCloseModal();

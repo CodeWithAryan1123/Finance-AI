@@ -15,6 +15,7 @@ import {
   Maximize2
 } from 'lucide-react';
 import { useTransactions } from '../../context/TransactionsContext';
+import { useAI } from '../../context/AIContext';
 import toast from 'react-hot-toast';
 
 const AIChatbot = ({ isOpen, onToggle }) => {
@@ -31,6 +32,7 @@ const AIChatbot = ({ isOpen, onToggle }) => {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
   const { transactions, getTotals } = useTransactions();
+  const { aiInsights, getAIRecommendationForGoal } = useAI();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -44,104 +46,106 @@ const AIChatbot = ({ isOpen, onToggle }) => {
   const generateAIResponse = (userMessage) => {
     const message = userMessage.toLowerCase();
     const totals = getTotals();
+    const insights = aiInsights;
+    
+    // Use AI insights for comprehensive analysis
+    const spendingPatterns = insights.spendingPatterns || {};
+    const savingsOpportunities = insights.savingsOpportunities || [];
+    const anomalies = insights.anomalies || [];
+    const predictions = insights.predictions || {};
+    
     const monthlyIncome = transactions
       .filter(t => t.type === 'income' && new Date(t.date).getMonth() === new Date().getMonth())
       .reduce((sum, t) => sum + t.amount, 0);
     
-    const monthlyExpenses = transactions
-      .filter(t => t.type === 'expense' && new Date(t.date).getMonth() === new Date().getMonth())
-      .reduce((sum, t) => sum + t.amount, 0);
-    
+    const monthlyExpenses = spendingPatterns.averageMonthly || 0;
     const savingsRate = monthlyIncome > 0 ? ((monthlyIncome - monthlyExpenses) / monthlyIncome * 100).toFixed(1) : 0;
     
-    // Investment advice
+    // Investment advice with AI insights
     if (message.includes('invest') || message.includes('investment')) {
       if (savingsRate > 20) {
-        return `Great! With your current savings rate of ${savingsRate}%, you're in a good position to invest. Here's my recommendation:
+        return `🤖 AI Analysis: Excellent investment potential detected!
 
-💼 Portfolio Allocation:
-• Index funds (60-70%) - Low cost, diversified
-• Bonds (20-30%) - Stability and income  
-• Emergency fund first (3-6 months expenses)
+💼 Your Financial Profile:
+• Savings rate: ${savingsRate}% (Excellent!)
+• Monthly surplus: ₹${monthlyIncome - monthlyExpenses}
+• Risk tolerance: Medium-High (based on spending patterns)
 
-📈 Investment Strategy:
-• Start with $${Math.round(monthlyIncome * 0.15)} monthly
-• Use dollar-cost averaging
-• Consider ETFs like SPY, VTI, BND
-• Increase contributions annually
+� AI Recommendations:
+• Equity exposure: 70% (SIP in diversified funds)
+• Debt allocation: 20% (PPF, ELSS for tax benefits)
+• Emergency fund: 10% (liquid funds)
+• Suggested monthly SIP: ₹${Math.round((monthlyIncome - monthlyExpenses) * 0.6)}
 
-⚠️ Remember: Invest only what you can afford to lose!`;
+🎯 Next Steps:
+1. Start with index funds (Nifty 50, Sensex)
+2. Consider tax-saving ELSS funds
+3. Set up automated SIPs
+4. Review portfolio quarterly
+
+⚠️ AI Alert: Based on your spending on ${spendingPatterns.topCategories?.[0]?.[0] || 'entertainment'}, ensure 6-month emergency fund first!`;
       } else {
-        return `Your current savings rate is ${savingsRate}%. Before investing, let's improve your financial foundation:
+        return `🤖 AI Analysis: Investment readiness requires improvement.
 
-🎯 Priority Steps:
-1. Build emergency fund (3-6 months expenses)
-2. Target 15-20% savings rate
-3. Pay off high-interest debt first
+📊 Current Status:
+• Savings rate: ${savingsRate}% (Target: 20%+)
+• Top spending: ${spendingPatterns.topCategories?.map(([cat, amt]) => `${cat} (₹${amt})`).join(', ') || 'Various categories'}
 
-💡 Quick wins to increase savings:
-• Track all expenses for 30 days
-• Cut one subscription you don't use
-• Cook at home 2 more nights per week
+💡 AI Savings Opportunities:
+${savingsOpportunities.slice(0, 3).map(op => `• ${op.message}`).join('\n') || '• Track expenses for better insights'}
 
-Once you're saving 15%+, then we can talk investments!`;
+🎯 3-Month Action Plan:
+1. Month 1: Track all expenses, identify leaks
+2. Month 2: Implement top 2 savings opportunities  
+3. Month 3: Build emergency fund, then invest
+
+🚀 Quick Wins: Start with ₹${Math.max(1000, Math.round(monthlyIncome * 0.05))} monthly savings!`;
       }
     }
     
-    // Savings advice
+    // Comprehensive savings advice with AI insights
     if (message.includes('save') || message.includes('saving')) {
-      const topExpenseCategories = getTopExpenseCategories();
-      return `Based on your spending patterns, here's how to save more:
+      const topOpportunities = savingsOpportunities.slice(0, 3);
+      return `🤖 AI-Powered Savings Analysis:
 
 💰 Current Financial Health:
-• Savings rate: ${savingsRate}% (Target: 20%+)
-• Monthly income: $${monthlyIncome}
-• Monthly expenses: $${monthlyExpenses}
-• Monthly savings: $${monthlyIncome - monthlyExpenses}
+• Savings rate: ${savingsRate}% (${savingsRate > 20 ? 'Excellent!' : savingsRate > 10 ? 'Good, can improve' : 'Needs attention'})
+• Monthly income: ₹${monthlyIncome.toLocaleString()}
+• Monthly expenses: ₹${monthlyExpenses.toFixed(0)}
+• Potential monthly savings: ₹${(monthlyIncome - monthlyExpenses).toFixed(0)}
 
-🔍 Top spending categories:
-${topExpenseCategories.map(cat => `• ${cat.category}: $${cat.amount.toFixed(2)}`).join('\n')}
+🎯 AI-Identified Opportunities:
+${topOpportunities.length > 0 ? topOpportunities.map(op => `• ${op.message} (Save ₹${op.potentialSaving})`).join('\n') : '• Build consistent tracking for better insights'}
 
-💡 Savings tips:
-• Try the 50/30/20 rule (needs/wants/savings)
-• Automate savings to a separate account
-• Use the envelope method for discretionary spending
-• Review subscriptions monthly
+📊 Spending Breakdown:
+${spendingPatterns.topCategories?.map(([cat, amt], i) => `${i + 1}. ${cat}: ₹${amt.toLocaleString()}`).join('\n') || 'Add more transactions for analysis'}
 
-What category would you like help reducing?`;
+⚡ Quick Actions:
+• Set up ₹${Math.round(monthlyIncome * 0.15)} auto-transfer to savings
+• Review and cancel unused subscriptions  
+• Use 50/30/20 rule: Needs/Wants/Savings
+${anomalies.length > 0 ? `• Check recent unusual expense: ${anomalies[0].message}` : ''}`;
     }
     
-    // Specific purchase advice (iPad example)
-    if (message.includes('ipad') || message.includes('buy')) {
+    // Purchase advice (iPad, phone, etc.)
+    if (message.includes('ipad') || message.includes('buy') || message.includes('purchase')) {
       const itemCost = message.includes('ipad') ? 800 : 500; // Default item cost
       const monthlySavings = Math.max(0, monthlyIncome - monthlyExpenses);
       const monthsToSave = monthlySavings > 0 ? Math.ceil(itemCost / monthlySavings) : Infinity;
       
       if (monthlySavings > 0) {
+        const adviceText = monthsToSave <= 3 ? 
+          'Go for it! You\'re saving well and can afford this purchase.\n\n💡 Smart purchase tips:\n• Wait for sales (Black Friday, back-to-school)\n• Consider refurbished models (save 15-20%)\n• Set up a dedicated "iPad fund" account\n• Maybe delay 1 month to get accessories too!' 
+          : 
+          'Consider waiting or adjusting your budget:\n\n💡 Options to speed this up:\n• Increase income with side hustle\n• Reduce expenses temporarily\n• Save specifically for this goal\n• Consider a less expensive model\n\nWould you like help creating a savings plan for this purchase?';
+        
         return `💻 iPad Purchase Plan ($${itemCost}):
 
 📊 Your Financial Position:
 • Monthly savings available: $${monthlySavings}
 • Time needed: ${monthsToSave} month${monthsToSave !== 1 ? 's' : ''}
 
-${monthsToSave <= 3 ? 
-  `✅ Go for it! You're saving well and can afford this purchase.
-
-💡 Smart purchase tips:
-• Wait for sales (Black Friday, back-to-school)
-• Consider refurbished models (save 15-20%)
-• Set up a dedicated "iPad fund" account
-• Maybe delay 1 month to get accessories too!` 
-  : 
-  `⚠️ Consider waiting or adjusting your budget:
-
-💡 Options to speed this up:
-• Increase income with side hustle
-• Reduce expenses temporarily
-• Save specifically for this goal
-• Consider a less expensive model
-
-Would you like help creating a savings plan for this purchase?`}`;
+${monthsToSave <= 3 ? '✅' : '⚠️'} ${adviceText}`;
       } else {
         return `🚨 Budget Alert: You're currently spending more than you earn!
 

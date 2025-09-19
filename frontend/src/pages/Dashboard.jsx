@@ -15,6 +15,7 @@ import {
   Plus
 } from 'lucide-react';
 import { useApi } from '../context/ApiContext';
+import AIInsightsDashboard from '../components/AI/AIInsightsDashboard';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -175,6 +176,9 @@ const Dashboard = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* AI Insights Dashboard */}
+      <AIInsightsDashboard />
 
       <div className="dashboard-content">
         {/* Recent Transactions */}
