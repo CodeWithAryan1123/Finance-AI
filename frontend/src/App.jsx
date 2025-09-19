@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from './context/ThemeContext';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { ApiProvider } from './context/ApiContext';
 import { TransactionsProvider } from './context/TransactionsContext';
 import { AIProvider } from './context/AIContext';
@@ -29,18 +29,11 @@ import './styles/animations.css';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     // Simulate app initialization
     const initializeApp = async () => {
-      try {
-        // Check authentication status
-        const token = localStorage.getItem('authToken');
-        if (token) {
-          setIsAuthenticated(true);
-        }
-        
+      try {        
         // Simulate loading time for smooth animation
         await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (error) {
@@ -58,62 +51,81 @@ function App() {
   }
 
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <ApiProvider>
-          <TransactionsProvider>
-            <AIProvider>
-              <Router>
-              <div className="app">
-                <Toaster 
-                  position="top-right"
-                  toastOptions={{
-                    duration: 3000,
-                    style: {
-                      background: 'var(--card-bg)',
-                      color: 'var(--text-primary)',
-                      border: '1px solid var(--border-color)',
-                      borderRadius: '12px',
-                      backdropFilter: 'blur(10px)',
-                    },
-                  }}
-                />
-              
-              <AnimatePresence mode="wait">
-                {isAuthenticated ? (
-                  <AuthenticatedApp key="authenticated" />
-                ) : (
-                  <UnauthenticatedApp key="unauthenticated" />
-                )}
-              </AnimatePresence>
-            </div>
-          </Router>
-            </AIProvider>
-          </TransactionsProvider>
-        </ApiProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <Router>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </ThemeProvider>
+    </Router>
   );
 }
 
+const AppContent = () => {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  return (
+    <ApiProvider>
+      <TransactionsProvider>
+        <AIProvider>
+          <AnimatePresence mode="wait">
+            {isAuthenticated ? <AuthenticatedApp /> : <UnauthenticatedApp />}
+          </AnimatePresence>
+          
+          {/* Toast Notifications */}
+          <Toaster 
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: 'var(--card-bg)',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--border-color)',
+                borderRadius: '12px',
+                boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)',
+              },
+              success: {
+                iconTheme: {
+                  primary: 'var(--success-color)',
+                  secondary: 'white',
+                },
+              },
+              error: {
+                iconTheme: {
+                  primary: 'var(--error-color)',
+                  secondary: 'white',
+                },
+              },
+            }}
+          />
+        </AIProvider>
+      </TransactionsProvider>
+    </ApiProvider>
+  );
+};
+
 const AuthenticatedApp = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Check if mobile on mount and window resize
+  // Check screen size
   useEffect(() => {
-    const checkMobile = () => {
+    const checkScreenSize = () => {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
       if (mobile) {
-        setSidebarOpen(false); // Close sidebar by default on mobile
+        setSidebarOpen(false);
       }
     };
 
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
   return (

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { 
   Home, 
   CreditCard, 
@@ -17,6 +18,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const Sidebar = ({ isOpen, onToggle }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { logout, user } = useAuth();
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
@@ -54,8 +56,29 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { path: '/analytics', icon: BarChart3, label: 'Analytics', color: '#8b5cf6' },
   ];
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    try {
+      // Show loading toast
+      const loadingToast = toast.loading('Logging out...');
+      
+      // Perform logout
+      await logout();
+      
+      // Dismiss loading toast and show success
+      toast.dismiss(loadingToast);
+      toast.success('Logged out successfully!');
+      
+      // Close sidebar on mobile
+      if (isMobile && isOpen) {
+        onToggle();
+      }
+      
+      // Navigate to login page
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      toast.error('Failed to logout. Please try again.');
+    }
   };
 
   const sidebarVariants = {
