@@ -2,19 +2,16 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Menu, 
-  Search, 
   Bell, 
   Sun, 
   Moon, 
   Settings,
-  Plus,
-  Filter
+  Plus
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 
 const Header = ({ onMenuToggle }) => {
-  const [searchQuery, setSearchQuery] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
@@ -24,11 +21,6 @@ const Header = ({ onMenuToggle }) => {
     { id: 2, title: 'New Transaction', message: 'Payment received: ₹2,500', type: 'success', time: '10m ago' },
     { id: 3, title: 'Goal Achievement', message: 'Congratulations! You reached your savings goal', type: 'success', time: '1h ago' },
   ];
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    console.log('Searching for:', searchQuery);
-  };
 
   return (
     <motion.header
@@ -53,30 +45,6 @@ const Header = ({ onMenuToggle }) => {
             <h1>Welcome back, {user?.name?.split(' ')[0] || 'Guest'}!</h1>
             <p className="header-subtitle">Here's what's happening with your finances today</p>
           </div>
-        </div>
-
-        {/* Center Section - Search */}
-        <div className="header-center">
-          <form className="search-form" onSubmit={handleSearch}>
-            <div className="search-container">
-              <Search size={18} className="search-icon" />
-              <input
-                type="text"
-                placeholder="Search transactions, budgets..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="search-input"
-              />
-              <motion.button
-                type="button"
-                className="filter-btn"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Filter size={16} />
-              </motion.button>
-            </div>
-          </form>
         </div>
 
         {/* Right Section */}
@@ -276,68 +244,6 @@ const Header = ({ onMenuToggle }) => {
           line-height: 1.2;
         }
 
-        .header-center {
-          flex: 2;
-          max-width: 600px;
-          min-width: 0;
-        }
-
-        .search-form {
-          width: 100%;
-        }
-
-        .search-container {
-          position: relative;
-          display: flex;
-          align-items: center;
-          background: var(--card-bg);
-          border: 1px solid var(--border-color);
-          border-radius: var(--border-radius-lg);
-          padding: 0.75rem 1rem;
-          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-          width: 100%;
-          box-sizing: border-box;
-        }
-
-        .search-container:focus-within {
-          border-color: var(--text-accent);
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .search-icon {
-          color: var(--text-tertiary);
-          margin-right: 0.75rem;
-        }
-
-        .search-input {
-          flex: 1;
-          border: none;
-          background: none;
-          color: var(--text-primary);
-          font-size: 0.95rem;
-          outline: none;
-        }
-
-        .search-input::placeholder {
-          color: var(--text-tertiary);
-        }
-
-        .filter-btn {
-          margin-left: 0.75rem;
-          padding: 0.25rem;
-          border: none;
-          background: none;
-          color: var(--text-tertiary);
-          cursor: pointer;
-          border-radius: 4px;
-          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .filter-btn:hover {
-          color: var(--text-accent);
-          background: rgba(59, 130, 246, 0.1);
-        }
-
         .header-right {
           display: flex;
           align-items: center;
@@ -527,10 +433,6 @@ const Header = ({ onMenuToggle }) => {
             padding: 0 1.5rem;
             gap: 1.5rem;
           }
-          
-          .header-center {
-            max-width: 400px;
-          }
         }
 
         @media (max-width: 1024px) {
@@ -545,10 +447,6 @@ const Header = ({ onMenuToggle }) => {
           
           .quick-add-btn span {
             display: none;
-          }
-          
-          .header-center {
-            max-width: 300px;
           }
           
           .header-title h1 {
@@ -568,10 +466,6 @@ const Header = ({ onMenuToggle }) => {
           .header-content {
             padding: 0 1rem;
             gap: 0.75rem;
-          }
-
-          .header-center {
-            display: none;
           }
 
           .header-title h1 {
