@@ -110,6 +110,10 @@ body {
   margin-left: 80px;
 }
 
+.main-content.mobile {
+  margin-left: 0;
+}
+
 .page-container {
   flex: 1;
   padding: 2rem;
@@ -262,6 +266,30 @@ body {
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
 }
 
+@media (max-width: 1200px) {
+  .page-container {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .main-content {
+    margin-left: 70px;
+  }
+  
+  .main-content.sidebar-closed {
+    margin-left: 70px;
+  }
+  
+  .main-content.mobile {
+    margin-left: 0;
+  }
+  
+  .page-container {
+    padding: 1.25rem;
+  }
+}
+
 @media (max-width: 768px) {
   .grid-4,
   .grid-3,
@@ -277,6 +305,16 @@ body {
   
   .main-content.sidebar-closed {
     margin-left: 0;
+  }
+  
+  .main-content.mobile {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: 0.75rem;
   }
 }
 

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -9,11 +11,14 @@ import {
   CreditCard,
   Calendar,
   ArrowUpRight,
-  ArrowDownLeft
+  ArrowDownLeft,
+  Plus
 } from 'lucide-react';
 import { useApi } from '../context/ApiContext';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  
   const [stats, setStats] = useState({
     totalBalance: 125000,
     monthlyIncome: 85000,
@@ -56,6 +61,41 @@ const Dashboard = () => {
         stiffness: 100
       }
     }
+  };
+
+  // Navigation handlers
+  const handleViewAllTransactions = () => {
+    toast.success('Navigating to Transactions page...');
+    navigate('/transactions');
+  };
+
+  const handleManageBudgets = () => {
+    toast.success('Navigating to Budget Management...');
+    navigate('/budgets');
+  };
+
+  const handleViewAnalytics = () => {
+    toast.success('Navigating to Analytics...');
+    navigate('/analytics');
+  };
+
+  const handleTransactionClick = (transactionId) => {
+    // Navigate to transactions page with the specific transaction highlighted
+    toast.success('Opening transaction details...');
+    navigate('/transactions', { state: { highlightTransaction: transactionId } });
+  };
+
+  const handleTransactionKeyDown = (event, transactionId) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleTransactionClick(transactionId);
+    }
+  };
+
+  const handleQuickAddTransaction = () => {
+    toast.success('Opening quick add transaction...');
+    // You could open a modal here or navigate to add transaction page
+    navigate('/transactions?action=add');
   };
 
   return (
@@ -141,17 +181,31 @@ const Dashboard = () => {
         <motion.div className="card transactions-card" variants={itemVariants}>
           <div className="card-header">
             <h2>Recent Transactions</h2>
-            <button className="btn btn-secondary">View All</button>
+            <motion.button 
+              className="btn btn-secondary"
+              onClick={handleViewAllTransactions}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              View All
+            </motion.button>
           </div>
           <div className="card-body">
             <div className="transactions-list">
               {recentTransactions.map((transaction, index) => (
                 <motion.div
                   key={transaction.id}
-                  className="transaction-item"
+                  className="transaction-item clickable"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
+                  onClick={() => handleTransactionClick(transaction.id)}
+                  onKeyDown={(e) => handleTransactionKeyDown(e, transaction.id)}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`View details for ${transaction.description} transaction`}
+                  whileHover={{ scale: 1.02, backgroundColor: "var(--bg-tertiary)" }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   <div className="transaction-icon">
                     {transaction.type === 'income' ? (
@@ -177,7 +231,14 @@ const Dashboard = () => {
         <motion.div className="card budget-card" variants={itemVariants}>
           <div className="card-header">
             <h2>Budget Overview</h2>
-            <button className="btn btn-secondary">Manage</button>
+            <motion.button 
+              className="btn btn-secondary"
+              onClick={handleManageBudgets}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Manage
+            </motion.button>
           </div>
           <div className="card-body">
             <div className="budget-list">
@@ -221,6 +282,20 @@ const Dashboard = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Floating Action Button */}
+      <motion.button
+        className="fab"
+        onClick={handleQuickAddTransaction}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ delay: 0.5, type: "spring", stiffness: 500, damping: 30 }}
+        title="Quick Add Transaction"
+      >
+        <Plus size={24} />
+      </motion.button>
 
       <style jsx>{`
         .dashboard {
@@ -347,9 +422,28 @@ const Dashboard = () => {
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        .transaction-item.clickable {
+          cursor: pointer;
+        }
+
         .transaction-item:hover {
           background: var(--bg-tertiary);
           transform: translateX(4px);
+          box-shadow: var(--shadow-md);
+        }
+
+        .transaction-item.clickable:hover {
+          border-color: var(--text-accent);
+        }
+
+        .transaction-item.clickable:focus {
+          outline: 2px solid var(--text-accent);
+          outline-offset: 2px;
+          border-color: var(--text-accent);
+        }
+
+        .transaction-item.clickable:active {
+          transform: translateX(2px) scale(0.98);
         }
 
         .transaction-icon {
@@ -471,6 +565,53 @@ const Dashboard = () => {
         @media (max-width: 480px) {
           .stats-grid {
             grid-template-columns: 1fr;
+          }
+        }
+
+        /* Floating Action Button */
+        .fab {
+          position: fixed;
+          bottom: 2rem;
+          right: 2rem;
+          width: 56px;
+          height: 56px;
+          background: linear-gradient(135deg, #3b82f6, #6366f1);
+          border: none;
+          border-radius: 50%;
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          box-shadow: var(--shadow-lg);
+          z-index: 1000;
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fab:hover {
+          box-shadow: var(--shadow-xl);
+          transform: translateY(-2px);
+        }
+
+        .fab:active {
+          transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+          .fab {
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 52px;
+            height: 52px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .fab {
+            bottom: 1rem;
+            right: 1rem;
+            width: 48px;
+            height: 48px;
           }
         }
       `}</style>
