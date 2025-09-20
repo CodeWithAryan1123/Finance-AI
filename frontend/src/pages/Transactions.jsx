@@ -22,7 +22,7 @@ import {
 const Transactions = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { transactions, loading, updateTransaction, deleteTransaction } = useTransactions();
+  const { transactions, loading, addTransaction, updateTransaction, deleteTransaction } = useTransactions();
   
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -31,6 +31,14 @@ const Transactions = () => {
   const [dateFilter, setDateFilter] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newTransaction, setNewTransaction] = useState({
+    type: 'expense',
+    amount: '',
+    description: '',
+    category: 'Food & Dining',
+    date: new Date().toISOString().split('T')[0]
+  });
 
   const categories = [
     'all', 'Food & Dining', 'Transportation', 'Bills & Utilities', 
@@ -93,8 +101,42 @@ const Transactions = () => {
   }, [searchQuery, selectedCategory, selectedType, dateFilter, transactions]);
 
   const handleAddTransaction = () => {
-    toast.success('Opening add transaction form...');
-    // Could open a modal or navigate to a form
+    setShowAddModal(true);
+  };
+
+  const handleSubmitTransaction = (e) => {
+    e.preventDefault();
+    
+    // Validate form
+    if (!newTransaction.amount || !newTransaction.description) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    // Add transaction
+    try {
+      addTransaction(newTransaction);
+      toast.success('Transaction added successfully!');
+      
+      // Reset form and close modal
+      setNewTransaction({
+        type: 'expense',
+        amount: '',
+        description: '',
+        category: 'Food & Dining',
+        date: new Date().toISOString().split('T')[0]
+      });
+      setShowAddModal(false);
+    } catch (error) {
+      toast.error('Failed to add transaction');
+    }
+  };
+
+  const handleInputChange = (field, value) => {
+    setNewTransaction(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
   const handleEditTransaction = (transaction) => {
@@ -732,6 +774,148 @@ const Transactions = () => {
           background: rgba(239, 68, 68, 0.2);
         }
 
+        /* Modal Styles */
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 1rem;
+        }
+
+        .modal-content {
+          background: var(--card-bg);
+          border-radius: 12px;
+          width: 100%;
+          max-width: 500px;
+          max-height: 90vh;
+          overflow-y: auto;
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1.5rem 1.5rem 1rem 1.5rem;
+          border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h2 {
+          margin: 0;
+          color: var(--text-primary);
+          font-size: 1.5rem;
+          font-weight: 600;
+        }
+
+        .close-btn {
+          background: none;
+          border: none;
+          font-size: 1.5rem;
+          color: var(--text-secondary);
+          cursor: pointer;
+          padding: 0.25rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 4px;
+          transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+          background: var(--hover-bg);
+          color: var(--text-primary);
+        }
+
+        .transaction-form {
+          padding: 1.5rem;
+        }
+
+        .form-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1rem;
+          margin-bottom: 1rem;
+        }
+
+        .form-group {
+          margin-bottom: 1rem;
+        }
+
+        .form-group label {
+          display: block;
+          margin-bottom: 0.5rem;
+          color: var(--text-primary);
+          font-weight: 500;
+          font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select {
+          width: 100%;
+          padding: 0.75rem;
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          background: var(--input-bg);
+          color: var(--text-primary);
+          font-size: 0.9rem;
+          transition: all 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+          outline: none;
+          border-color: var(--primary-color);
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-actions {
+          display: flex;
+          gap: 1rem;
+          justify-content: flex-end;
+          margin-top: 2rem;
+        }
+
+        .btn {
+          padding: 0.75rem 1.5rem;
+          border: none;
+          border-radius: 8px;
+          font-weight: 500;
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .btn-primary {
+          background: var(--primary-color);
+          color: white;
+        }
+
+        .btn-primary:hover {
+          background: var(--primary-hover);
+          transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+          background: var(--secondary-bg);
+          color: var(--text-secondary);
+          border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+          background: var(--hover-bg);
+          color: var(--text-primary);
+        }
+
         @media (max-width: 768px) {
           .page-header {
             flex-direction: column;
@@ -762,6 +946,24 @@ const Transactions = () => {
           .transaction-actions {
             opacity: 1;
           }
+
+          .form-row {
+            grid-template-columns: 1fr;
+          }
+
+          .modal-content {
+            margin: 0.5rem;
+            max-height: 95vh;
+          }
+
+          .modal-header,
+          .transaction-form {
+            padding: 1rem;
+          }
+
+          .form-actions {
+            flex-direction: column;
+          }
         }
 
         @media (max-width: 480px) {
@@ -780,6 +982,112 @@ const Transactions = () => {
           }
         }
       `}</style>
+
+      {/* Add Transaction Modal */}
+      <AnimatePresence>
+        {showAddModal && (
+          <motion.div 
+            className="modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowAddModal(false)}
+          >
+            <motion.div 
+              className="modal-content"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header">
+                <h2>Add New Transaction</h2>
+                <button 
+                  className="close-btn"
+                  onClick={() => setShowAddModal(false)}
+                >
+                  ×
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmitTransaction} className="transaction-form">
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Type *</label>
+                    <select 
+                      value={newTransaction.type}
+                      onChange={(e) => handleInputChange('type', e.target.value)}
+                      required
+                    >
+                      <option value="expense">Expense</option>
+                      <option value="income">Income</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Amount *</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={newTransaction.amount}
+                      onChange={(e) => handleInputChange('amount', e.target.value)}
+                      placeholder="0.00"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Description *</label>
+                  <input
+                    type="text"
+                    value={newTransaction.description}
+                    onChange={(e) => handleInputChange('description', e.target.value)}
+                    placeholder="Enter transaction description"
+                    required
+                  />
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Category</label>
+                    <select 
+                      value={newTransaction.category}
+                      onChange={(e) => handleInputChange('category', e.target.value)}
+                    >
+                      {categories.filter(cat => cat !== 'all').map(category => (
+                        <option key={category} value={category}>{category}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Date</label>
+                    <input
+                      type="date"
+                      value={newTransaction.date}
+                      onChange={(e) => handleInputChange('date', e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-actions">
+                  <button 
+                    type="button" 
+                    className="btn btn-secondary"
+                    onClick={() => setShowAddModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-primary">
+                    Add Transaction
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

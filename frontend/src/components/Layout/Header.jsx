@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -21,6 +22,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { useTransactions } from '../../context/TransactionsContext';
 import { useAI } from '../../context/AIContext';
+import { useNotifications } from '../../context/NotificationContext';
 
 const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -36,13 +38,42 @@ const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
   const { user, logout } = useAuth();
   const { addTransaction } = useTransactions();
   const { autoCategorizTransaction } = useAI();
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
   const navigate = useNavigate();
+  const notificationRef = useRef(null);
 
-  const notifications = [
-    { id: 1, title: 'Budget Alert', message: 'You have exceeded 80% of your food budget', type: 'warning', time: '5m ago' },
-    { id: 2, title: 'New Transaction', message: 'Payment received: ₹2,500', type: 'success', time: '10m ago' },
-    { id: 3, title: 'Goal Achievement', message: 'Congratulations! You reached your savings goal', type: 'success', time: '1h ago' },
-  ];
+  // Close notification dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setShowNotifications(false);
+      }
+    };
+
+    const handleEscapeKey = (event) => {
+      if (event.key === 'Escape') {
+        setShowNotifications(false);
+      }
+    };
+
+    if (showNotifications) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [showNotifications]);
+
+  const handleNotificationClick = (notification) => {
+    if (!notification.read) {
+      markAsRead(notification.id);
+    }
+    // You can add navigation logic here based on notification type
+    // For example: navigate to transactions page for transaction notifications
+  };
 
   const handleAddClick = () => {
     setShowAddModal(true);
@@ -180,7 +211,7 @@ const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
           </motion.button>
 
           {/* Notifications */}
-          <div className="notifications-container">
+          <div className="notifications-container" ref={notificationRef}>
             <motion.button
               className="notification-btn"
               onClick={() => setShowNotifications(!showNotifications)}
@@ -188,14 +219,14 @@ const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
               whileTap={{ scale: 0.95 }}
             >
               <Bell size={18} />
-              {notifications.length > 0 && (
+              {unreadCount > 0 && (
                 <motion.span
                   className="notification-badge"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 >
-                  {notifications.length}
+                  {unreadCount}
                 </motion.span>
               )}
             </motion.button>
@@ -211,24 +242,35 @@ const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
                 >
                   <div className="dropdown-header">
                     <h3>Notifications</h3>
-                    <button className="mark-all-read">Mark all read</button>
+                    <button className="mark-all-read" onClick={markAllAsRead}>
+                      Mark all read
+                    </button>
                   </div>
                   <div className="notifications-list">
-                    {notifications.map((notification, index) => (
-                      <motion.div
-                        key={notification.id}
-                        className={`notification-item ${notification.type}`}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                      >
-                        <div className="notification-content">
-                          <h4>{notification.title}</h4>
-                          <p>{notification.message}</p>
-                          <span className="notification-time">{notification.time}</span>
-                        </div>
-                      </motion.div>
-                    ))}
+                    {notifications.length === 0 ? (
+                      <div className="empty-notifications">
+                        <p>No notifications</p>
+                      </div>
+                    ) : (
+                      notifications.map((notification, index) => (
+                        <motion.div
+                          key={notification.id}
+                          className={`notification-item ${notification.type} ${!notification.read ? 'unread' : 'read'}`}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          onClick={() => handleNotificationClick(notification)}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <div className="notification-content">
+                            <h4>{notification.title}</h4>
+                            <p>{notification.message}</p>
+                            <span className="notification-time">{notification.time}</span>
+                          </div>
+                          {!notification.read && <div className="unread-dot"></div>}
+                        </motion.div>
+                      ))
+                    )}
                   </div>
                   <div className="dropdown-footer">
                     <button className="view-all-btn">View all notifications</button>
@@ -571,6 +613,7 @@ const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
 
         .notifications-container {
           position: relative;
+          z-index: 1002 !important;
         }
 
         .notification-btn {
@@ -610,16 +653,17 @@ const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
         }
 
         .notifications-dropdown {
-          position: absolute;
-          top: calc(100% + 0.5rem);
-          right: 0;
+          position: fixed;
+          top: var(--header-height, 72px);
+          right: 2rem;
           width: 320px;
-          background: var(--card-bg);
-          border: 1px solid var(--border-color);
-          border-radius: var(--border-radius-lg);
-          box-shadow: var(--shadow-xl);
+          background: var(--card-bg, #ffffff);
+          border: 1px solid var(--border-color, #e2e8f0);
+          border-radius: var(--border-radius-lg, 16px);
+          box-shadow: var(--shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04));
           backdrop-filter: blur(20px);
           overflow: hidden;
+          z-index: 1003 !important;
         }
 
         .dropdown-header {
@@ -690,6 +734,36 @@ const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
 
         .notification-item.success h4 {
           color: var(--success);
+        }
+
+        .notification-item.unread {
+          background: rgba(59, 130, 246, 0.05);
+          border-left: 3px solid var(--info);
+        }
+
+        .notification-item.read {
+          opacity: 0.7;
+        }
+
+        .unread-dot {
+          position: absolute;
+          top: 1rem;
+          right: 1rem;
+          width: 8px;
+          height: 8px;
+          background: var(--info);
+          border-radius: 50%;
+        }
+
+        .empty-notifications {
+          padding: 2rem 1rem;
+          text-align: center;
+          color: var(--text-secondary);
+        }
+
+        .empty-notifications p {
+          margin: 0;
+          font-size: 0.9rem;
         }
 
         .dropdown-footer {
@@ -976,7 +1050,9 @@ const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
           
           .notifications-dropdown {
             width: calc(100vw - 2rem);
-            right: -1rem;
+            right: 1rem;
+            left: 1rem;
+            width: auto;
           }
         }
       `}</style>
