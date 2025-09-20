@@ -215,8 +215,9 @@ const corsOptions = {
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:5000',
-      'https://your-production-domain.com'
-    ];
+      'https://finance-ai-app.onrender.com',
+      process.env.CORS_ORIGIN
+    ].filter(Boolean); // Remove any undefined values
     
     // In development, allow all origins
     if (process.env.NODE_ENV === 'development') {
