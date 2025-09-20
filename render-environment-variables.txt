@@ -10,9 +10,8 @@ JWT_SECRET=finance-ai-super-secure-jwt-secret-key-minimum-32-characters-2025
 PORT=10000
 
 # CORS (Update with your actual Render URL after deployment)
-# First deployment: use *
-# After deployment: replace with your actual URL
-CORS_ORIGIN=*
+# UPDATE THIS IN RENDER DASHBOARD:
+CORS_ORIGIN=https://finance-ai-app.onrender.com
 
 # Optional - Update these when you're ready for payments
 RAZORPAY_KEY_ID=your_razorpay_key_id
