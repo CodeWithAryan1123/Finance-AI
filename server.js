@@ -70,15 +70,21 @@ app.get('/health', (req, res) => {
 // Serve static files from frontend build
 app.use(express.static(path.join(__dirname, 'frontend/dist')));
 
-// Serve frontend for any non-API routes
-app.get('*', (req, res) => {
-  if (!req.path.startsWith('/api')) {
+// API routes should go here before the catch-all
+// (your existing API routes are already above)
+
+// Serve frontend for any non-API routes (this should be last before error handlers)
+app.get('*', (req, res, next) => {
+  // Only serve index.html for non-API routes that aren't static assets
+  if (!req.path.startsWith('/api') && !req.path.includes('.')) {
     res.sendFile(path.join(__dirname, 'frontend/dist', 'index.html'));
-  } else {
+  } else if (req.path.startsWith('/api')) {
     res.status(404).json({
       success: false,
       message: 'API route not found'
     });
+  } else {
+    next(); // Let static file handler or error handler deal with it
   }
 });
 
