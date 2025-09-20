@@ -19,6 +19,17 @@ const PublicHeader = () => {
     setShowAuthModal(true);
   };
 
+  const handleSmoothScroll = (e, targetId) => {
+    e.preventDefault();
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+
   return (
     <>
       <motion.header
@@ -45,6 +56,7 @@ const PublicHeader = () => {
             <motion.a 
               href="#features" 
               className="nav-link"
+              onClick={(e) => handleSmoothScroll(e, 'features')}
               whileHover={{ y: -2 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
@@ -53,6 +65,7 @@ const PublicHeader = () => {
             <motion.a 
               href="#pricing" 
               className="nav-link"
+              onClick={(e) => handleSmoothScroll(e, 'pricing')}
               whileHover={{ y: -2 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
@@ -61,6 +74,7 @@ const PublicHeader = () => {
             <motion.a 
               href="#about" 
               className="nav-link"
+              onClick={(e) => handleSmoothScroll(e, 'about')}
               whileHover={{ y: -2 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
@@ -137,6 +151,10 @@ const PublicHeader = () => {
       />
 
       <style jsx>{`
+        html {
+          scroll-behavior: smooth;
+        }
+        
         .public-header {
           position: sticky;
           top: 0;

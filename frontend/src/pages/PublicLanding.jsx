@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   BarChart3, 
@@ -10,62 +10,71 @@ import {
   CheckCircle,
   Star
 } from 'lucide-react';
+import AuthModal from '../components/Layout/AuthModal';
 
 const PublicLanding = () => {
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState('signup');
+
+  const handleGetStartedFree = () => {
+    setAuthMode('signup');
+    setShowAuthModal(true);
+  };
+
   const features = [
     {
       icon: <Brain size={48} />,
-      title: 'AI-Powered Insights',
-      description: 'Get intelligent financial advice and automated categorization powered by advanced AI algorithms.'
+      title: 'Student-Focused AI',
+      description: 'Get intelligent financial advice tailored for student life - from tuition planning to daily expense management.'
     },
     {
       icon: <BarChart3 size={48} />,
-      title: 'Advanced Analytics',
-      description: 'Visualize your spending patterns, track budgets, and gain insights with beautiful charts and reports.'
+      title: 'Academic Expense Analytics',
+      description: 'Visualize your spending on books, mess fees, hostel costs, and entertainment with student-friendly charts.'
     },
     {
       icon: <TrendingUp size={48} />,
-      title: 'Goal Tracking',
-      description: 'Set financial goals and track your progress with smart recommendations to achieve them faster.'
+      title: 'Student Goal Tracking',
+      description: 'Set financial goals for semester expenses, textbooks, or saving for your future - built for student budgets.'
     },
     {
       icon: <Shield size={48} />,
-      title: 'Bank-Level Security',
-      description: 'Your financial data is protected with enterprise-grade encryption and security measures.'
+      title: 'Secure & Private',
+      description: 'Your financial data is protected with enterprise-grade encryption. Perfect for privacy-conscious students.'
     },
     {
       icon: <Smartphone size={48} />,
-      title: 'Mobile Optimized',
-      description: 'Access your financial dashboard from anywhere with our responsive, mobile-first design.'
+      title: 'Mobile-First Design',
+      description: 'Manage your finances on-the-go between classes with our intuitive mobile interface.'
     },
     {
       icon: <Zap size={48} />,
-      title: 'Real-time Updates',
-      description: 'Get instant notifications and real-time updates on your spending and financial health.'
+      title: 'Beta Testing Phase',
+      description: 'Join our beta testing program and help shape the future of student financial management tools.'
     }
   ];
 
   const testimonials = [
     {
-      name: 'Sarah Johnson',
-      role: 'Small Business Owner',
+      name: 'Priya Sharma',
+      role: 'Computer Science Student',
+      avatar: '👩‍🎓',
+      rating: 5,
+      comment: 'FinanceAI helped me track my hostel expenses and textbook costs. Finally staying within my monthly budget!'
+    },
+    {
+      name: 'Arjun Patel',
+      role: 'Engineering Student',
+      avatar: '👨‍🎓',
+      rating: 5,
+      comment: 'As a beta tester, I love how it categorizes my mess fees and project expenses automatically. Great for students!'
+    },
+    {
+      name: 'Sneha Kumar',
+      role: 'MBA Student',
       avatar: '👩‍💼',
       rating: 5,
-      comment: 'FinanceAI has transformed how I manage my business finances. The AI insights are incredibly accurate!'
-    },
-    {
-      name: 'Michael Chen',
-      role: 'Software Engineer',
-      avatar: '👨‍💻',
-      rating: 5,
-      comment: 'The automated categorization saves me hours every month. Best financial app I\'ve ever used!'
-    },
-    {
-      name: 'Emily Rodriguez',
-      role: 'Marketing Manager',
-      avatar: '👩‍🎨',
-      rating: 5,
-      comment: 'Finally reached my savings goal thanks to the smart recommendations and tracking features.'
+      comment: 'The AI insights help me save money for my loan payments. Can\'t wait for the full version to launch!'
     }
   ];
 
@@ -81,26 +90,26 @@ const PublicLanding = () => {
             transition={{ duration: 0.8 }}
           >
             <h1 className="hero-title">
-              Smart Financial Management
+              Smart Financial Management for Students
               <span className="gradient-text"> Powered by AI</span>
             </h1>
             <p className="hero-description">
-              Take control of your finances with intelligent insights, automated tracking, 
-              and personalized recommendations. Join thousands of users who've transformed 
-              their financial lives with FinanceAI.
+              Master your student finances with intelligent insights designed specifically for 
+              academic life. From tuition tracking to daily expenses, FinanceAI helps students 
+              make smarter financial decisions during their educational journey.
             </p>
             <div className="hero-stats">
               <div className="stat">
-                <span className="stat-number">10k+</span>
-                <span className="stat-label">Active Users</span>
+                <span className="stat-number">500+</span>
+                <span className="stat-label">Beta Students</span>
               </div>
               <div className="stat">
-                <span className="stat-number">₹50M+</span>
-                <span className="stat-label">Money Managed</span>
+                <span className="stat-number">₹5M+</span>
+                <span className="stat-label">Student Money Tracked</span>
               </div>
               <div className="stat">
-                <span className="stat-number">95%</span>
-                <span className="stat-label">User Satisfaction</span>
+                <span className="stat-number">🚧</span>
+                <span className="stat-label">In Development</span>
               </div>
             </div>
           </motion.div>
@@ -164,8 +173,8 @@ const PublicLanding = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h2>Powerful Features for Smart Financial Management</h2>
-            <p>Everything you need to take control of your finances and build wealth intelligently</p>
+            <h2>Powerful Features Designed for Students</h2>
+            <p>Everything students need to master their finances during academic life and beyond</p>
           </motion.div>
 
           <div className="features-grid">
@@ -200,8 +209,8 @@ const PublicLanding = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h2>Loved by Thousands of Users</h2>
-            <p>See what our users say about their experience with FinanceAI</p>
+            <h2>Loved by Student Beta Testers</h2>
+            <p>See what our student beta testers say about their experience with FinanceAI</p>
           </motion.div>
 
           <div className="testimonials-grid">
@@ -234,6 +243,254 @@ const PublicLanding = () => {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section id="pricing" className="pricing-section">
+        <div className="section-content">
+          <motion.div
+            className="section-header"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h2>Beta Pricing - Free for Students</h2>
+            <p>Currently in development phase - free access for all student beta testers</p>
+          </motion.div>
+
+          <div className="pricing-grid">
+            {/* Free Plan */}
+            <motion.div
+              className="pricing-card"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -10 }}
+            >
+              <div className="pricing-header">
+                <h3>Free</h3>
+                <div className="pricing-price">
+                  <span className="currency">₹</span>
+                  <span className="amount">0</span>
+                  <span className="period">/month</span>
+                </div>
+                <p>Perfect for getting started</p>
+              </div>
+              <div className="pricing-features">
+                <div className="feature-item">
+                  <CheckCircle size={16} />
+                  <span>Up to 100 transactions/month</span>
+                </div>
+                <div className="feature-item">
+                  <CheckCircle size={16} />
+                  <span>Basic analytics</span>
+                </div>
+                <div className="feature-item">
+                  <CheckCircle size={16} />
+                  <span>3 budget categories</span>
+                </div>
+                <div className="feature-item">
+                  <CheckCircle size={16} />
+                  <span>Mobile app access</span>
+                </div>
+              </div>
+              <button 
+                className="pricing-button free" 
+                onClick={handleGetStartedFree}
+              >
+                Get Started Free
+              </button>
+            </motion.div>
+
+            {/* Pro Plan */}
+            <motion.div
+              className="pricing-card popular"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -10 }}
+            >
+              <div className="popular-badge">Most Popular</div>
+              <div className="pricing-header">
+                <h3>Pro</h3>
+                <div className="pricing-price">
+                  <span className="currency">₹</span>
+                  <span className="amount">299</span>
+                  <span className="period">/month</span>
+                </div>
+                <p>For serious financial planning</p>
+              </div>
+              <div className="pricing-features">
+                <div className="feature-item">
+                  <CheckCircle size={16} />
+                  <span>Unlimited transactions</span>
+                </div>
+                <div className="feature-item">
+                  <CheckCircle size={16} />
+                  <span>Advanced AI insights</span>
+                </div>
+                <div className="feature-item">
+                  <CheckCircle size={16} />
+                  <span>Unlimited budget categories</span>
+                </div>
+                <div className="feature-item">
+                  <CheckCircle size={16} />
+                  <span>Goal tracking</span>
+                </div>
+                <div className="feature-item">
+                  <CheckCircle size={16} />
+                  <span>Premium support</span>
+                </div>
+                <div className="feature-item">
+                  <CheckCircle size={16} />
+                  <span>Export reports</span>
+                </div>
+              </div>
+              <button className="pricing-button pro disabled" disabled>
+                Coming Soon
+              </button>
+            </motion.div>
+
+            {/* Business Plan */}
+            <motion.div
+              className="pricing-card"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -10 }}
+            >
+              <div className="pricing-header">
+                <h3>Business</h3>
+                <div className="pricing-price">
+                  <span className="currency">₹</span>
+                  <span className="amount">599</span>
+                  <span className="period">/month</span>
+                </div>
+                <p>For businesses and teams</p>
+              </div>
+              <div className="pricing-features">
+                <div className="feature-item">
+                  <CheckCircle size={16} />
+                  <span>Everything in Pro</span>
+                </div>
+                <div className="feature-item">
+                  <CheckCircle size={16} />
+                  <span>Multi-user access</span>
+                </div>
+                <div className="feature-item">
+                  <CheckCircle size={16} />
+                  <span>Business analytics</span>
+                </div>
+                <div className="feature-item">
+                  <CheckCircle size={16} />
+                  <span>API access</span>
+                </div>
+                <div className="feature-item">
+                  <CheckCircle size={16} />
+                  <span>Priority support</span>
+                </div>
+                <div className="feature-item">
+                  <CheckCircle size={16} />
+                  <span>Custom integrations</span>
+                </div>
+              </div>
+              <button className="pricing-button business disabled" disabled>
+                Coming Soon
+              </button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="about-section">
+        <div className="section-content">
+          <motion.div
+            className="section-header"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h2>About FinanceAI</h2>
+            <p>Revolutionizing personal finance management with artificial intelligence</p>
+          </motion.div>
+
+          <div className="about-content">
+            <motion.div
+              className="about-text"
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <h3>Our Mission</h3>
+              <p>
+                We believe that every student deserves access to intelligent financial guidance. 
+                FinanceAI was created in 2025 to address the growing challenges students face in 
+                managing their expenses, from tuition fees to daily living costs. Our mission is 
+                to empower students with AI-powered insights to make smarter financial decisions 
+                during their academic journey and beyond.
+              </p>
+              
+              <h3>Our Story</h3>
+              <p>
+                Launched in 2025 by a team of former students, financial experts, and AI engineers 
+                who experienced firsthand the struggles of student financial management. Currently 
+                in active development and testing phase, FinanceAI is being refined with feedback 
+                from student beta testers to ensure it truly meets the unique financial needs of 
+                the student community.
+              </p>
+
+              <h3>Why Choose FinanceAI?</h3>
+              <ul className="about-features">
+                <li>🎓 Designed specifically for student financial challenges and needs</li>
+                <li>🤖 AI algorithms trained to understand student spending patterns</li>
+                <li>🔒 Bank-level security with end-to-end encryption for your data</li>
+                <li>📱 Mobile-first design for busy student lifestyles</li>
+                <li>💡 Smart budgeting tools for tuition, books, and living expenses</li>
+                <li>� Currently in beta - actively improving based on student feedback</li>
+              </ul>
+            </motion.div>
+
+            <motion.div
+              className="about-stats"
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <div className="stat-card">
+                <div className="stat-number">500+</div>
+                <div className="stat-label">Beta Testers</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">₹5M+</div>
+                <div className="stat-label">Student Money Tracked</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">50K+</div>
+                <div className="stat-label">Transactions Analyzed</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">95%</div>
+                <div className="stat-label">Beta Satisfaction</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">24/7</div>
+                <div className="stat-label">Development Support</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">🚧</div>
+                <div className="stat-label">In Development</div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="cta-section">
         <div className="section-content">
@@ -244,20 +501,20 @@ const PublicLanding = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h2>Ready to Transform Your Finances?</h2>
-            <p>Join thousands of users who have already taken control of their financial future</p>
+            <h2>Ready to Join Our Student Beta Program?</h2>
+            <p>Be among the first students to experience AI-powered financial management designed specifically for academic life</p>
             <div className="cta-features">
               <div className="cta-feature">
                 <CheckCircle size={20} />
-                <span>Free to start</span>
+                <span>Free beta access</span>
               </div>
               <div className="cta-feature">
                 <CheckCircle size={20} />
-                <span>No credit card required</span>
+                <span>Help shape the future</span>
               </div>
               <div className="cta-feature">
                 <CheckCircle size={20} />
-                <span>Setup in under 2 minutes</span>
+                <span>Student-focused features</span>
               </div>
             </div>
           </motion.div>
@@ -685,6 +942,301 @@ const PublicLanding = () => {
           color: #9ca3af;
         }
 
+        /* Pricing Section Styles */
+        .pricing-section {
+          padding: 5rem 2rem;
+          max-width: 1200px;
+          margin: 0 auto;
+          background: rgba(102, 126, 234, 0.02);
+        }
+
+        [data-theme="dark"] .pricing-section {
+          background: rgba(102, 126, 234, 0.05);
+        }
+
+        .pricing-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 2rem;
+          margin-top: 3rem;
+        }
+
+        .pricing-card {
+          background: white;
+          border-radius: 20px;
+          padding: 2.5rem;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+          border: 1px solid rgba(0, 0, 0, 0.05);
+          transition: all 0.3s ease;
+          position: relative;
+        }
+
+        .pricing-card.popular {
+          border: 2px solid #667eea;
+          box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        [data-theme="dark"] .pricing-card {
+          background: #1f2937;
+          border-color: #374151;
+        }
+
+        [data-theme="dark"] .pricing-card.popular {
+          border-color: #667eea;
+        }
+
+        .popular-badge {
+          position: absolute;
+          top: -12px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          color: white;
+          padding: 0.5rem 1.5rem;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 600;
+        }
+
+        .pricing-header {
+          text-align: center;
+          margin-bottom: 2rem;
+        }
+
+        .pricing-header h3 {
+          font-size: 1.5rem;
+          font-weight: 700;
+          margin-bottom: 1rem;
+          color: #1f2937;
+        }
+
+        [data-theme="dark"] .pricing-header h3 {
+          color: #f9fafb;
+        }
+
+        .pricing-price {
+          display: flex;
+          align-items: baseline;
+          justify-content: center;
+          gap: 0.25rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .currency {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: #667eea;
+        }
+
+        .amount {
+          font-size: 3rem;
+          font-weight: 800;
+          color: #667eea;
+        }
+
+        .period {
+          font-size: 1rem;
+          color: #64748b;
+        }
+
+        [data-theme="dark"] .period {
+          color: #9ca3af;
+        }
+
+        .pricing-header p {
+          color: #64748b;
+          margin: 0;
+        }
+
+        [data-theme="dark"] .pricing-header p {
+          color: #9ca3af;
+        }
+
+        .pricing-features {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          margin-bottom: 2rem;
+        }
+
+        .feature-item {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          color: #1f2937;
+        }
+
+        [data-theme="dark"] .feature-item {
+          color: #f9fafb;
+        }
+
+        .feature-item svg {
+          color: #10b981;
+          flex-shrink: 0;
+        }
+
+        .pricing-button {
+          width: 100%;
+          padding: 1rem;
+          border: none;
+          border-radius: 12px;
+          font-weight: 600;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .pricing-button.free {
+          background: transparent;
+          border: 2px solid #667eea;
+          color: #667eea;
+        }
+
+        .pricing-button.free:hover {
+          background: #667eea;
+          color: white;
+        }
+
+        .pricing-button.pro {
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          color: white;
+        }
+
+        .pricing-button.pro:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .pricing-button.business {
+          background: #1f2937;
+          color: white;
+        }
+
+        .pricing-button.business:hover {
+          background: #374151;
+          transform: translateY(-2px);
+        }
+
+        [data-theme="dark"] .pricing-button.business {
+          background: #4b5563;
+        }
+
+        [data-theme="dark"] .pricing-button.business:hover {
+          background: #6b7280;
+        }
+
+        .pricing-button.disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          background: #e5e7eb !important;
+          color: #9ca3af !important;
+        }
+
+        .pricing-button.disabled:hover {
+          transform: none !important;
+          box-shadow: none !important;
+          background: #e5e7eb !important;
+        }
+
+        [data-theme="dark"] .pricing-button.disabled {
+          background: #4b5563 !important;
+          color: #9ca3af !important;
+        }
+
+        [data-theme="dark"] .pricing-button.disabled:hover {
+          background: #4b5563 !important;
+        }
+
+        /* About Section Styles */
+        .about-section {
+          padding: 5rem 2rem;
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+
+        .about-content {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 4rem;
+          align-items: start;
+          margin-top: 3rem;
+        }
+
+        .about-text h3 {
+          font-size: 1.5rem;
+          font-weight: 700;
+          margin-bottom: 1rem;
+          color: #1f2937;
+        }
+
+        [data-theme="dark"] .about-text h3 {
+          color: #f9fafb;
+        }
+
+        .about-text p {
+          color: #64748b;
+          line-height: 1.7;
+          margin-bottom: 2rem;
+        }
+
+        [data-theme="dark"] .about-text p {
+          color: #9ca3af;
+        }
+
+        .about-features {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+
+        .about-features li {
+          color: #64748b;
+          line-height: 1.7;
+          margin-bottom: 0.75rem;
+        }
+
+        [data-theme="dark"] .about-features li {
+          color: #9ca3af;
+        }
+
+        .about-stats {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1.5rem;
+        }
+
+        .stat-card {
+          background: white;
+          padding: 2rem;
+          border-radius: 16px;
+          text-align: center;
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+          border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .stat-card {
+          background: #1f2937;
+          border-color: #374151;
+        }
+
+        .stat-card .stat-number {
+          font-size: 2rem;
+          font-weight: 800;
+          color: #667eea;
+          margin-bottom: 0.5rem;
+          display: block;
+        }
+
+        .stat-card .stat-label {
+          font-size: 0.9rem;
+          color: #64748b;
+          font-weight: 500;
+        }
+
+        [data-theme="dark"] .stat-card .stat-label {
+          color: #9ca3af;
+        }
+
         .cta-content h2 {
           font-size: 2.5rem;
           font-weight: 700;
@@ -745,6 +1297,19 @@ const PublicLanding = () => {
             grid-template-columns: 1fr;
           }
 
+          .pricing-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .about-content {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+          }
+
+          .about-stats {
+            grid-template-columns: 1fr;
+          }
+
           .cta-features {
             flex-direction: column;
             align-items: center;
@@ -752,6 +1317,14 @@ const PublicLanding = () => {
           }
         }
       `}</style>
+
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        mode={authMode}
+        onModeChange={setAuthMode}
+      />
     </div>
   );
 };
