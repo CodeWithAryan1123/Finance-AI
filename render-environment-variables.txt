@@ -1,0 +1,21 @@
+# Copy these environment variables to Render Dashboard
+# Go to: Your Service → Environment → Add Environment Variable
+
+NODE_ENV=production
+
+MONGODB_URI=mongodb+srv://financeai-admin:Dishu%4090415@cluster0.fnatvnd.mongodb.net/finance_ai?retryWrites=true&w=majority&appName=Cluster0
+
+JWT_SECRET=finance-ai-super-secure-jwt-secret-key-minimum-32-characters-2025
+
+PORT=10000
+
+# CORS (Update with your actual Render URL after deployment)
+# First deployment: use *
+# After deployment: replace with your actual URL
+CORS_ORIGIN=*
+
+# Optional - Update these when you're ready for payments
+RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+STRIPE_SECRET_KEY=sk_live_your_stripe_secret_key
+STRIPE_PUBLISHABLE_KEY=pk_live_your_stripe_publishable_key

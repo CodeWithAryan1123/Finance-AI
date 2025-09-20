@@ -15,7 +15,14 @@ export const useApi = () => {
 const getApiBaseUrl = () => {
   const currentHost = window.location.hostname;
   const currentPort = window.location.port;
+  const protocol = window.location.protocol;
   
+  // Production environment (deployed)
+  if (currentHost !== 'localhost' && currentHost !== '127.0.0.1') {
+    return `${protocol}//${currentHost}${currentPort ? `:${currentPort}` : ''}`;
+  }
+  
+  // Development environment
   // If running on port 3000 (Vite dev server), point to Express server on 5000
   if (currentPort === '3000') {
     return `http://${currentHost}:5000`;

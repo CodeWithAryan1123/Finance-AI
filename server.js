@@ -67,13 +67,13 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Serve static files
-app.use(express.static('public'));
+// Serve static files from frontend build
+app.use(express.static(path.join(__dirname, 'frontend/dist')));
 
 // Serve frontend for any non-API routes
 app.get('*', (req, res) => {
   if (!req.path.startsWith('/api')) {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'frontend/dist', 'index.html'));
   } else {
     res.status(404).json({
       success: false,
