@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { useTheme } from '../context/ThemeContext';
 import { 
   User, 
   Shield, 
@@ -35,6 +36,7 @@ const Settings = () => {
   const [activeSection, setActiveSection] = useState('profile');
   const [loading, setLoading] = useState({});
   const [imageUploading, setImageUploading] = useState(false);
+  const { theme, setTheme } = useTheme();
   
   // Settings state
   const [settings, setSettings] = useState({
@@ -59,7 +61,6 @@ const Settings = () => {
       pushNotifications: true
     },
     preferences: {
-      theme: 'light',
       currency: 'INR',
       language: 'en',
       dateFormat: 'DD/MM/YYYY',
@@ -447,8 +448,11 @@ const Settings = () => {
           <div className="preference-item">
             <label>Theme</label>
             <select
-              value={settings.preferences.theme}
-              onChange={(e) => updateSetting('preferences', 'theme', e.target.value)}
+              value={theme}
+              onChange={(e) => {
+                setTheme(e.target.value);
+                toast.success('Theme updated successfully');
+              }}
             >
               <option value="light">Light</option>
               <option value="dark">Dark</option>

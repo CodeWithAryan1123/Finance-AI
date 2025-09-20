@@ -27,8 +27,30 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     // Apply theme to document
-    document.documentElement.setAttribute('data-theme', theme);
+    let actualTheme = theme;
+    
+    if (theme === 'auto') {
+      // Check system preference for auto mode
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      actualTheme = prefersDark ? 'dark' : 'light';
+    }
+    
+    document.documentElement.setAttribute('data-theme', actualTheme);
     localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  // Listen for system theme changes when in auto mode
+  useEffect(() => {
+    if (theme === 'auto') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = () => {
+        const actualTheme = mediaQuery.matches ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', actualTheme);
+      };
+      
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
   }, [theme]);
 
   const toggleTheme = () => {
@@ -39,7 +61,7 @@ export const ThemeProvider = ({ children }) => {
     theme,
     setTheme,
     toggleTheme,
-    isDark: theme === 'dark'
+    isDark: theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)
   };
 
   return (
