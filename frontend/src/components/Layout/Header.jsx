@@ -15,7 +15,8 @@ import {
   Calendar,
   Tag,
   Type,
-  Bot
+  Bot,
+  LogOut
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
@@ -34,7 +35,7 @@ const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
     date: new Date().toISOString().split('T')[0]
   });
   const { theme, toggleTheme } = useTheme();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { addTransaction } = useTransactions();
   const { autoCategorizTransaction } = useAI();
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
@@ -80,6 +81,11 @@ const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
 
   const handleSettingsClick = () => {
     navigate('/settings');
+  };
+
+  const handleLogout = () => {
+    logout();
+    toast.success('Logged out successfully!');
   };
 
   const handleCloseModal = () => {
@@ -295,6 +301,17 @@ const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
             title="Settings"
           >
             <Settings size={18} />
+          </motion.button>
+
+          {/* Logout */}
+          <motion.button
+            className="logout-btn"
+            onClick={handleLogout}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            title="Logout"
+          >
+            <LogOut size={18} />
           </motion.button>
         </div>
       </div>
@@ -569,7 +586,8 @@ const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
         }
 
         .theme-toggle,
-        .settings-btn {
+        .settings-btn,
+        .logout-btn {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -586,6 +604,11 @@ const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
         .theme-toggle:hover,
         .settings-btn:hover {
           background: var(--bg-tertiary);
+        }
+
+        .logout-btn:hover {
+          background: var(--error-bg);
+          color: var(--error-color);
         }
 
         .notifications-container {
@@ -1014,6 +1037,7 @@ const Header = ({ onMenuToggle, onChatbotToggle, isChatbotOpen }) => {
           
           .theme-toggle,
           .settings-btn,
+          .logout-btn,
           .notification-btn,
           .ai-chatbot-btn {
             width: 36px;

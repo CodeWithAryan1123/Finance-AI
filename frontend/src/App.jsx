@@ -12,7 +12,7 @@ import { NotificationProvider } from './context/NotificationContext';
 // Components
 import Sidebar from './components/Layout/Sidebar';
 import Header from './components/Layout/Header';
-import LoadingScreen from './components/UI/LoadingScreen';
+import PublicHeader from './components/Layout/PublicHeader';
 import AIChatbot from './components/AI/AIChatbot';
 import AINotificationSystem from './components/AI/AINotificationSystem';
 
@@ -22,35 +22,13 @@ import Transactions from './pages/Transactions';
 import Budgets from './pages/Budgets';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
-import Login from './pages/Auth/Login';
+import PublicLanding from './pages/PublicLanding';
 
 // Custom CSS
 import './styles/global.css';
 import './styles/animations.css';
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate app initialization
-    const initializeApp = async () => {
-      try {        
-        // Simulate loading time for smooth animation
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      } catch (error) {
-        console.error('App initialization failed:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    initializeApp();
-  }, []);
-
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-
   return (
     <Router>
       <ThemeProvider>
@@ -63,11 +41,7 @@ function App() {
 }
 
 const AppContent = () => {
-  const { isAuthenticated, loading } = useAuth();
-
-  if (loading) {
-    return <LoadingScreen />;
-  }
+  const { isAuthenticated } = useAuth();
 
   return (
     <ApiProvider>
@@ -177,16 +151,25 @@ const AuthenticatedApp = () => {
 const UnauthenticatedApp = () => {
   return (
     <motion.div 
-      className="auth-layout"
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
+      className="public-layout"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
+      <PublicHeader />
+      <PublicLanding />
+      
+      <style jsx>{`
+        .public-layout {
+          min-height: 100vh;
+          background: var(--bg-primary, #ffffff);
+        }
+        
+        [data-theme="dark"] .public-layout {
+          background: var(--bg-primary, #111827);
+        }
+      `}</style>
     </motion.div>
   );
 };
