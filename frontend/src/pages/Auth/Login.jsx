@@ -42,18 +42,26 @@ const Login = () => {
 
   return (
     <div className="auth-container">
+      <div className="auth-background">
+        <div className="auth-bg-shapes">
+          <div className="shape shape-1"></div>
+          <div className="shape shape-2"></div>
+          <div className="shape shape-3"></div>
+        </div>
+      </div>
+      
       <motion.div
         className="auth-card"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
       >
         <div className="auth-header">
           <motion.div
             className="logo"
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
           >
             <div className="logo-icon">💰</div>
             <h1>FinanceAI</h1>
@@ -173,49 +181,106 @@ const Login = () => {
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 2rem;
-          background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .auth-background {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          z-index: 1;
+        }
+
+        .auth-bg-shapes {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+        }
+
+        .shape {
+          position: absolute;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.1);
+          animation: float 6s ease-in-out infinite;
+        }
+
+        .shape-1 {
+          width: 200px;
+          height: 200px;
+          top: 10%;
+          left: 10%;
+          animation-delay: 0s;
+        }
+
+        .shape-2 {
+          width: 150px;
+          height: 150px;
+          top: 60%;
+          right: 15%;
+          animation-delay: 2s;
+        }
+
+        .shape-3 {
+          width: 100px;
+          height: 100px;
+          bottom: 20%;
+          left: 60%;
+          animation-delay: 4s;
+        }
+
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(180deg); }
         }
 
         .auth-card {
+          position: relative;
+          z-index: 2;
           width: 100%;
-          max-width: 400px;
-          background: var(--card-bg);
-          border: 1px solid var(--border-color);
-          border-radius: var(--border-radius-xl);
-          padding: 2.5rem;
+          max-width: 420px;
+          background: rgba(255, 255, 255, 0.95);
           backdrop-filter: blur(20px);
-          box-shadow: var(--shadow-xl);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 24px;
+          padding: 3rem;
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+          margin: 2rem;
         }
 
         .auth-header {
           text-align: center;
-          margin-bottom: 2rem;
+          margin-bottom: 2.5rem;
         }
 
         .logo {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 0.75rem;
-          margin-bottom: 1rem;
+          gap: 1rem;
+          margin-bottom: 1.5rem;
         }
 
         .logo-icon {
-          width: 48px;
-          height: 48px;
-          background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-          border-radius: 12px;
+          width: 56px;
+          height: 56px;
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          border-radius: 16px;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1.5rem;
+          font-size: 1.75rem;
+          box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         }
 
         .logo h1 {
-          font-size: 1.75rem;
+          font-size: 2rem;
           font-weight: 700;
-          background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+          background: linear-gradient(135deg, #667eea, #764ba2);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -223,14 +288,27 @@ const Login = () => {
         }
 
         .auth-header p {
-          color: var(--text-secondary);
+          color: #64748b;
+          font-size: 1.1rem;
           margin: 0;
         }
 
         .auth-form {
           display: flex;
           flex-direction: column;
-          gap: 1.5rem;
+          gap: 1.75rem;
+        }
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .form-label {
+          font-weight: 600;
+          color: #374151;
+          font-size: 0.95rem;
         }
 
         .input-container {
@@ -241,107 +319,134 @@ const Login = () => {
 
         .input-icon {
           position: absolute;
-          left: 1rem;
-          color: var(--text-tertiary);
+          left: 1.25rem;
+          color: #9ca3af;
           z-index: 2;
         }
 
         .form-input {
           width: 100%;
-          padding: 0.875rem 1rem 0.875rem 3rem;
-          border: 1px solid var(--border-color);
-          border-radius: var(--border-radius-md);
-          background: var(--bg-secondary);
-          color: var(--text-primary);
-          font-size: 0.95rem;
-          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          padding: 1rem 1.25rem 1rem 3.25rem;
+          border: 2px solid #e5e7eb;
+          border-radius: 12px;
+          background: #ffffff;
+          color: #111827;
+          font-size: 1rem;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .form-input:focus {
           outline: none;
-          border-color: var(--text-accent);
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .password-toggle {
           position: absolute;
-          right: 1rem;
+          right: 1.25rem;
           background: none;
           border: none;
-          color: var(--text-tertiary);
+          color: #9ca3af;
           cursor: pointer;
-          padding: 0.25rem;
-          border-radius: 4px;
+          padding: 0.5rem;
+          border-radius: 6px;
           transition: color 0.2s ease;
         }
 
         .password-toggle:hover {
-          color: var(--text-secondary);
+          color: #667eea;
         }
 
         .auth-submit {
           width: 100%;
-          padding: 0.875rem;
-          background: linear-gradient(135deg, #3b82f6, #6366f1);
+          padding: 1rem;
+          background: linear-gradient(135deg, #667eea, #764ba2);
           color: white;
           border: none;
-          border-radius: var(--border-radius-md);
+          border-radius: 12px;
           font-weight: 600;
-          font-size: 1rem;
+          font-size: 1.1rem;
           cursor: pointer;
-          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-          margin-top: 0.5rem;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          margin-top: 1rem;
         }
 
         .auth-submit:hover:not(:disabled) {
           transform: translateY(-2px);
-          box-shadow: var(--shadow-lg);
+          box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
         }
 
         .auth-submit:disabled {
           opacity: 0.7;
           cursor: not-allowed;
+          transform: none;
         }
 
         .auth-footer {
           text-align: center;
-          margin-top: 2rem;
+          margin-top: 2.5rem;
           padding-top: 2rem;
-          border-top: 1px solid var(--border-color);
+          border-top: 1px solid #e5e7eb;
         }
 
         .auth-footer p {
-          color: var(--text-secondary);
+          color: #64748b;
           margin: 0;
+          font-size: 0.95rem;
         }
 
         .auth-toggle {
           background: none;
           border: none;
-          color: var(--text-accent);
+          color: #667eea;
           cursor: pointer;
           font-weight: 600;
+          font-size: 0.95rem;
+          text-decoration: none;
+          transition: color 0.2s ease;
+        }
+
+        .auth-toggle:hover {
+          color: #5a67d8;
           text-decoration: underline;
         }
 
         .demo-notice {
-          margin-top: 1.5rem;
-          padding: 1rem;
-          background: rgba(59, 130, 246, 0.1);
-          border: 1px solid rgba(59, 130, 246, 0.2);
-          border-radius: var(--border-radius-md);
+          margin-top: 2rem;
+          padding: 1.25rem;
+          background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+          border: 1px solid rgba(102, 126, 234, 0.2);
+          border-radius: 12px;
           text-align: center;
         }
 
         .demo-notice p {
           margin: 0.25rem 0;
-          font-size: 0.85rem;
-          color: var(--text-secondary);
+          font-size: 0.9rem;
+          color: #64748b;
         }
 
         .demo-notice p:first-child {
           font-weight: 600;
-          color: var(--text-accent);
+          color: #667eea;
+          font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+          .auth-card {
+            margin: 1rem;
+            padding: 2rem;
+          }
+          
+          .logo h1 {
+            font-size: 1.75rem;
+          }
+          
+          .logo-icon {
+            width: 48px;
+            height: 48px;
+            font-size: 1.5rem;
+          }
         }
       `}</style>
     </div>
